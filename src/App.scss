@@ -1,0 +1,55 @@
+@mixin content-border {
+  border: 2px inset white;
+  background-color: #cccccc;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__wrapper {
+    &-outside {
+      width: 550px;
+      //height: 636px;
+      border: 2px outset white;
+    }
+
+    &-inside {
+      height: 100%;
+      border: 10px solid #cccccc;
+    }
+  }
+
+  &__content {
+    &-top {
+      @include content-border;
+      height: 64px;
+    }
+
+    &-center {
+      margin: 0;
+      border: 5px solid #cccccc;
+    }
+
+    &-down {
+      @include content-border;
+      height: 512px;
+    }
+
+  }
+}
