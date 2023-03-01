@@ -1,8 +1,3 @@
-@mixin content-border {
-  border: 2px inset white;
-  background-color: #cccccc;
-}
-
 body {
   margin: 0;
   padding: 0;
@@ -36,19 +31,15 @@ body {
   }
 
   &__content {
-    &-top {
-      @include content-border;
-      height: 64px;
-    }
-
     &-center {
       margin: 0;
       border: 5px solid #cccccc;
     }
 
     &-down {
-      @include content-border;
       height: 512px;
+      border: 2px inset white;
+      background-color: #cccccc;
     }
 
   }

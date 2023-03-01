@@ -1,0 +1,32 @@
+.app {
+  &__content {
+    &-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 64px;
+      border: 2px inset white;
+      background-color: #cccccc;
+
+      &-left {
+        display: flex;
+        margin-left: 2.34375%;
+        height: 71.875%;
+        width: 15.234375%;
+      }
+
+      &-right {
+        display: flex;
+        margin-right: 2.34375%;
+        height: 71.875%;
+        width: 15.234375%;
+      }
+
+      &-smile {
+        display: flex;
+        height: 81.25%;
+        width: 10.15625%;
+      }
+    }
+  }
+}

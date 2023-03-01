@@ -1,18 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-
-enum GameStatuses {
-    idle,
-    begin,
-    end
-}
-
-enum SmileStatuses {
-    smile,
-    pressedSmile,
-    cool,
-    dead,
-    scary
-}
+import {GameStatuses, SmileStatuses} from '../../models/models';
 
 interface MineState {
     mineCount: number;
@@ -24,8 +11,8 @@ interface MineState {
 const initialState: MineState = {
     mineCount: 0,
     timer: 0,
-    gameStatus: 0,
-    smileStatus: 0
+    gameStatus: GameStatuses.Idle,
+    smileStatus: SmileStatuses.Smile
 }
 
 const mineSlice = createSlice({
