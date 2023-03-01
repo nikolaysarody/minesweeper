@@ -19,6 +19,9 @@ const mineSlice = createSlice({
     name: 'mine',
     initialState,
     reducers: {
+        updateTimer(state, action: PayloadAction<number>) {
+            state.timer = action.payload;
+        },
         updateCount(state, action: PayloadAction<number>) {
             state.mineCount = action.payload;
         },
@@ -31,6 +34,6 @@ const mineSlice = createSlice({
     },
 });
 
-export const {updateCount, updateGameStatus, updateSmileStatus} = mineSlice.actions;
+export const {updateTimer, updateCount, updateGameStatus, updateSmileStatus} = mineSlice.actions;
 
 export default mineSlice.reducer;
