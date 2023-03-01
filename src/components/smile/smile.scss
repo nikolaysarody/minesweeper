@@ -1,0 +1,12 @@
+.app {
+  &__content {
+    &-top {
+      &-smile {
+        display: flex;
+        height: 81.25%;
+        width: 10.15625%;
+        cursor: pointer;
+      }
+    }
+  }
+}

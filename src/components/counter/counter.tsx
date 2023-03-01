@@ -1,12 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Numbers} from '../../models/models';
+import './counter.scss';
 
 interface ICounter {
-    count: number
+    count: number,
+    side: string
 }
 
-const Counter: React.FC<ICounter> = ({count}) => {
+const Counter: React.FC<ICounter> = ({count, side}) => {
     const [display, setDisplay] = useState<Numbers[]>([Numbers.NumberZero, Numbers.NumberZero, Numbers.NumberZero]);
+    const counterContainer = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (counterContainer.current) {
+            counterContainer.current.ondragstart = () => false;
+        }
+    }, [counterContainer]);
 
     useEffect(() => {
         if (count <= 999) {
@@ -69,11 +78,11 @@ const Counter: React.FC<ICounter> = ({count}) => {
     }, [count]);
 
     return (
-        <>
+        <div className={`app__content-top-${side}`} ref={counterContainer}>
             <img src={display[0]} alt="0"/>
             <img src={display[1]} alt="0"/>
             <img src={display[2]} alt="0"/>
-        </>
+        </div>
     );
 }
 

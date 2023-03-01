@@ -12,6 +12,25 @@ export enum GameStatuses {
     End = 'END'
 }
 
+export enum TileStatuses {
+    TileDefault = '/img/tile/default.png',
+    TileOne = '/img/tile/one.png',
+    TileTwo = '/img/tile/two.png',
+    TileThree = '/img/tile/three.png',
+    TileFour = '/img/tile/four.png',
+    TileFive = '/img/tile/five.png',
+    TileSix = '/img/tile/six.png',
+    TileSeven = '/img/tile/seven.png',
+    TileEight = '/img/tile/eight.png',
+    TileVoid = '/img/tile/void.png',
+    TileMine = '/img/tile/mine.png',
+    TileMineExploded = '/img/tile/mine-exploded.png',
+    TileMineWrong = '/img/tile/mine-wrong.png',
+    TileQuestion = '/img/tile/question.png',
+    TileQuestionPressed = '/img/tile/question-pressed.png',
+    TileFlag = '/img/tile/flag.png'
+}
+
 export enum Numbers {
     NumberZero = '/img/number/zero.png',
     NumberOne = '/img/number/one.png',
@@ -22,5 +41,5 @@ export enum Numbers {
     NumberSix = '/img/number/six.png',
     NumberSeven = '/img/number/seven.png',
     NumberEight = '/img/number/eight.png',
-    NumberNine = '/img/number/nine.png',
+    NumberNine = '/img/number/nine.png'
 }

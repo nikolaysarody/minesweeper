@@ -1,8 +1,9 @@
 import React from 'react';
 import './App.scss';
-import Counter from './components/counter/counter';
-import Smile from './components/smile/smile';
+// import Counter from './components/counter/counter';
+// import Smile from './components/smile/smile';
 import Information from './components/information/information';
+import GameField from './components/gameField/gameField';
 
 function App() {
 
@@ -13,9 +14,7 @@ function App() {
           <div className="app__wrapper-inside">
             <Information/>
             <hr className="app__content-center"/>
-            <div className="app__content-down">
-
-            </div>
+            <GameField/>
           </div>
         </div>
       </div>

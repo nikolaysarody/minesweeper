@@ -1,0 +1,18 @@
+.app {
+  &__content {
+    &-down {
+      display: flex;
+      flex-wrap: wrap;
+      border: 2px inset white;
+      background-color: #cccccc;
+      &-tile {
+        display: flex;
+        width: 6.25%;
+
+        img {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

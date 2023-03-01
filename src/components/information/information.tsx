@@ -14,26 +14,20 @@ const Information: React.FC = () => {
 
     useEffect(() => {
         const timer = setInterval(() => {
-            setDisplayTimer((prev) =>  prev + 1);
+            setDisplayTimer((prev) => prev + 1);
         }, 1000);
         return () => clearInterval(timer);
     }, []);
 
     useEffect(() => {
         dispatch(updateTimer(displayTimer));
-    }, [displayTimer]);
+    }, [displayTimer, dispatch]);
 
     return (
         <div className="app__content-top">
-            <div className="app__content-top-left">
-                <Counter count={11}/>
-            </div>
-            <div className="app__content-top-smile">
-                <Smile/>
-            </div>
-            <div className="app__content-top-right">
-                <Counter count={displayTimer}/>
-            </div>
+            <Counter count={11} side={'left'} key={'left'}/>
+            <Smile/>
+            <Counter count={displayTimer} side={'right'} key={'right'}/>
         </div>
     );
 }

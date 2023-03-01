@@ -1,0 +1,20 @@
+@mixin sides {
+  display: flex;
+  height: 71.875%;
+  width: 15.234375%;
+}
+
+.app {
+  &__content {
+    &-top {
+      &-left {
+        @include sides;
+        margin-left: 2.34375%;
+      }
+      &-right {
+        @include sides;
+        margin-right: 2.34375%;
+      }
+    }
+  }
+}
