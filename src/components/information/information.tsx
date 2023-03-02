@@ -8,6 +8,7 @@ import {updateTimer} from '../../store/slices/mineSlice';
 
 const Information: React.FC = () => {
     const timer = useAppSelector(state => state.mine.timer);
+    const count = useAppSelector(state => state.mine.count);
     const [displayTimer, setDisplayTimer] = useState<number>(timer);
 
     const dispatch = useAppDispatch();
@@ -25,7 +26,7 @@ const Information: React.FC = () => {
 
     return (
         <div className="app__content-top">
-            <Counter count={11} side={'left'} key={'left'}/>
+            <Counter count={count} side={'left'} key={'left'}/>
             <Smile/>
             <Counter count={displayTimer} side={'right'} key={'right'}/>
         </div>

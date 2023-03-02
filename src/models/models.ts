@@ -43,3 +43,8 @@ export enum Numbers {
     NumberEight = '/img/number/eight.png',
     NumberNine = '/img/number/nine.png'
 }
+
+export interface ITile {
+    tile: JSX.Element;
+    status: string
+}

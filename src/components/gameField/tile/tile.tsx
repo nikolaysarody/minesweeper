@@ -4,11 +4,12 @@ import './tile.scss';
 
 
 interface ITile {
-    key: string
+    // key: string
+    status: TileStatuses
 }
 
-const Tile: React.FC<ITile> = ({key}) => {
-    const [tileStatus, setTileStatus] = useState<TileStatuses>(TileStatuses.TileDefault);
+const Tile: React.FC<ITile> = ({status}) => {
+    const [tileStatus, setTileStatus] = useState<TileStatuses>(status);
     const tileContainer = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -23,8 +24,7 @@ const Tile: React.FC<ITile> = ({key}) => {
 
     return (
         <div className="app__content-down-tile"
-             key={key}
-             onClick={() => setTileStatus(TileStatuses.TileVoid)}
+             onClick={() => setTileStatus(status)}
              ref={tileContainer}>
             <img src={tileStatus} alt="tile"/>
         </div>

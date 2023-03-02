@@ -2,14 +2,14 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {GameStatuses, SmileStatuses} from '../../models/models';
 
 interface MineState {
-    mineCount: number;
+    count: number;
     timer: number;
     gameStatus: GameStatuses;
     smileStatus: SmileStatuses
 }
 
 const initialState: MineState = {
-    mineCount: 0,
+    count: 0,
     timer: 0,
     gameStatus: GameStatuses.Idle,
     smileStatus: SmileStatuses.Smile
@@ -23,7 +23,7 @@ const mineSlice = createSlice({
             state.timer = action.payload;
         },
         updateCount(state, action: PayloadAction<number>) {
-            state.mineCount = action.payload;
+            state.count = action.payload;
         },
         updateGameStatus(state, action: PayloadAction<GameStatuses>) {
             state.gameStatus = action.payload;
