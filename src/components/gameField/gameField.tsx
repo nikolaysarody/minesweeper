@@ -3,15 +3,14 @@ import {v4} from 'uuid';
 import './gameField.scss';
 import Tile from './tile/tile';
 import {ITile, TileStatuses} from '../../models/models';
-import {useAppDispatch, useAppSelector} from '../../hook';
+import {useAppDispatch} from '../../hook';
 import {updateCount} from '../../store/slices/mineSlice';
 
 const GameField: React.FC = () => {
     const [tileArr, setTileArr] = useState<ITile[][]>([]);
-
     const dispatch = useAppDispatch();
 
-    const generateMines = () => {
+    useEffect(() => {
         let count = 0;
         const arrColumns: ITile[][] = [];
         while (count < 40) {
@@ -20,8 +19,8 @@ const GameField: React.FC = () => {
                 for (let j = 0; j < 16; j++) {
                     if (Math.round(Math.random() * (5 - 1) + 1) === 5 && count < 40) {
                         arrRows[j] = {
-                            tile: <Tile key={v4()} status={TileStatuses.TileMine}/>,
-                            status: TileStatuses.TileMine
+                            status: TileStatuses.TileMine,
+                            neighbours: 0
                         }
                         if (!arrColumns[i]) {
                             count++;
@@ -31,15 +30,20 @@ const GameField: React.FC = () => {
                             dispatch(updateCount(count));
                         }
                     } else {
-                        if (arrColumns[i] && arrColumns[i][j] && arrColumns[i][j].status === TileStatuses.TileMine) {
+                        if (!arrColumns[i]) {
                             arrRows[j] = {
-                                tile: <Tile key={v4()} status={TileStatuses.TileMine}/>,
-                                status: TileStatuses.TileMine
+                                status: TileStatuses.TileVoid,
+                                neighbours: 0
+                            }
+                        } else if (arrColumns[i][j] && arrColumns[i][j].status === TileStatuses.TileMine) {
+                            arrRows[j] = {
+                                status: TileStatuses.TileMine,
+                                neighbours: 0
                             }
                         } else {
                             arrRows[j] = {
-                                tile: <Tile key={v4()} status={TileStatuses.TileVoid}/>,
-                                status: TileStatuses.TileVoid
+                                status: TileStatuses.TileVoid,
+                                neighbours: arrColumns[i][j].neighbours
                             }
                         }
                     }
@@ -47,18 +51,51 @@ const GameField: React.FC = () => {
                 arrColumns[i] = arrRows;
             }
         }
+        arrColumns.forEach((array, arrayIndex) => {
+            array.forEach((item, itemIndex) => {
+                if (item.status === TileStatuses.TileMine) {
+                    item.neighbours = 0;
+                    if (itemIndex > 0) {
+                        array[itemIndex - 1].neighbours = array[itemIndex - 1].neighbours + 1;
+                    }
+                    if (arrColumns[arrayIndex - 1]) {
+                        if (arrColumns[arrayIndex - 1][itemIndex]) {
+                            arrColumns[arrayIndex - 1][itemIndex].neighbours = arrColumns[arrayIndex - 1][itemIndex].neighbours + 1;
+                        }
+                        if (arrColumns[arrayIndex - 1][itemIndex - 1]) {
+                            arrColumns[arrayIndex - 1][itemIndex - 1].neighbours = arrColumns[arrayIndex - 1][itemIndex - 1].neighbours + 1;
+                        }
+                        if (arrColumns[arrayIndex - 1][itemIndex + 1]) {
+                            arrColumns[arrayIndex - 1][itemIndex + 1].neighbours = arrColumns[arrayIndex - 1][itemIndex + 1].neighbours + 1;
+                        }
+                    }
+                    if (arrColumns[arrayIndex] && arrColumns[arrayIndex][itemIndex + 1]) {
+                        array[itemIndex + 1].neighbours = array[itemIndex + 1].neighbours + 1;
+                    }
+                    if (arrColumns[arrayIndex + 1]) {
+                        if (arrColumns[arrayIndex + 1][itemIndex]) {
+                            arrColumns[arrayIndex + 1][itemIndex].neighbours = arrColumns[arrayIndex + 1][itemIndex].neighbours + 1;
+                        }
+                        if (arrColumns[arrayIndex + 1][itemIndex - 1]) {
+                            arrColumns[arrayIndex + 1][itemIndex - 1].neighbours = arrColumns[arrayIndex + 1][itemIndex - 1].neighbours + 1;
+                        }
+                        if (arrColumns[arrayIndex + 1][itemIndex + 1]) {
+                            arrColumns[arrayIndex + 1][itemIndex + 1].neighbours = arrColumns[arrayIndex + 1][itemIndex + 1].neighbours + 1;
+                        }
+                    }
+                }
+            })
+        })
         setTileArr(arrColumns);
-    }
-
-    useEffect(() => {
-        generateMines();
     }, []);
 
     return (
         <div className="app__content-down">
             {tileArr.map((item) => {
                 return item.map((item) => {
-                    return item.tile;
+                    return (
+                        <Tile status={item.status} neighbours={item.neighbours} key={v4()}/>
+                    );
                 });
             })}
         </div>

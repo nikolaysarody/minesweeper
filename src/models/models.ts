@@ -45,6 +45,7 @@ export enum Numbers {
 }
 
 export interface ITile {
-    tile: JSX.Element;
-    status: string
+    // tile: JSX.Element;
+    status: TileStatuses,
+    neighbours: number
 }
