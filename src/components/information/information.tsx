@@ -4,9 +4,10 @@ import Smile from '../smile/smile';
 import Counter from '../counter/counter';
 import './information.scss';
 import {updateTimer} from '../../store/slices/mineSlice';
-
+import {GameStatuses} from '../../models/models';
 
 const Information: React.FC = () => {
+    const gameStatus = useAppSelector(state => state.mine.gameStatus);
     const timer = useAppSelector(state => state.mine.timer);
     const count = useAppSelector(state => state.mine.count);
     const [displayTimer, setDisplayTimer] = useState<number>(timer);
@@ -14,11 +15,13 @@ const Information: React.FC = () => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        const timer = setInterval(() => {
-            setDisplayTimer((prev) => prev + 1);
-        }, 1000);
-        return () => clearInterval(timer);
-    }, []);
+        if (gameStatus === GameStatuses.Begin){
+            const timer = setInterval(() => {
+                setDisplayTimer((prev) => prev + 1);
+            }, 1000);
+            return () => clearInterval(timer);
+        }
+    }, [gameStatus]);
 
     useEffect(() => {
         dispatch(updateTimer(displayTimer));

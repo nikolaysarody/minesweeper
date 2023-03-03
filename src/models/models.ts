@@ -45,7 +45,16 @@ export enum Numbers {
 }
 
 export interface ITile {
-    // tile: JSX.Element;
     status: TileStatuses,
-    neighbours: number
+    neighbours: number,
+    tileCoordinates: number[],
+    pressedTile: boolean
+}
+
+export interface ITileItem {
+    status: TileStatuses,
+    neighbours: number,
+    generator: (agr: number[]) => void,
+    tileCoordinates: number[],
+    pressedTile: boolean
 }

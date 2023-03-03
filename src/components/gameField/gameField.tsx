@@ -10,17 +10,23 @@ const GameField: React.FC = () => {
     const [tileArr, setTileArr] = useState<ITile[][]>([]);
     const dispatch = useAppDispatch();
 
-    useEffect(() => {
+    const compareTwoArray = (a1: number[], a2: number[] = []) => {
+        return a1.toString() === a2.toString();
+    }
+
+    const generateMineField = (ignore?: number[]) => {
         let count = 0;
         const arrColumns: ITile[][] = [];
         while (count < 40) {
             for (let i = 0; i < 16; i++) {
                 const arrRows: ITile[] = [];
                 for (let j = 0; j < 16; j++) {
-                    if (Math.round(Math.random() * (5 - 1) + 1) === 5 && count < 40) {
+                    if (Math.round(Math.random() * (5 - 1) + 1) === 5 && count < 40 && !compareTwoArray([i, j], ignore)) {
                         arrRows[j] = {
                             status: TileStatuses.TileMine,
-                            neighbours: 0
+                            neighbours: 0,
+                            tileCoordinates: [i, j],
+                            pressedTile: false
                         }
                         if (!arrColumns[i]) {
                             count++;
@@ -33,17 +39,23 @@ const GameField: React.FC = () => {
                         if (!arrColumns[i]) {
                             arrRows[j] = {
                                 status: TileStatuses.TileVoid,
-                                neighbours: 0
+                                neighbours: 0,
+                                tileCoordinates: [i, j],
+                                pressedTile: compareTwoArray([i, j], ignore)
                             }
                         } else if (arrColumns[i][j] && arrColumns[i][j].status === TileStatuses.TileMine) {
                             arrRows[j] = {
                                 status: TileStatuses.TileMine,
-                                neighbours: 0
+                                neighbours: 0,
+                                tileCoordinates: [i, j],
+                                pressedTile: compareTwoArray([i, j], ignore)
                             }
                         } else {
                             arrRows[j] = {
                                 status: TileStatuses.TileVoid,
-                                neighbours: arrColumns[i][j].neighbours
+                                neighbours: arrColumns[i][j].neighbours,
+                                tileCoordinates: [i, j],
+                                pressedTile: compareTwoArray([i, j], ignore)
                             }
                         }
                     }
@@ -87,6 +99,10 @@ const GameField: React.FC = () => {
             })
         })
         setTileArr(arrColumns);
+    }
+
+    useEffect(() => {
+        generateMineField();
     }, []);
 
     return (
@@ -94,7 +110,11 @@ const GameField: React.FC = () => {
             {tileArr.map((item) => {
                 return item.map((item) => {
                     return (
-                        <Tile status={item.status} neighbours={item.neighbours} key={v4()}/>
+                        <Tile status={item.status}
+                              neighbours={item.neighbours} key={v4()}
+                              generator={generateMineField}
+                              tileCoordinates={item.tileCoordinates}
+                              pressedTile={item.pressedTile}/>
                     );
                 });
             })}
