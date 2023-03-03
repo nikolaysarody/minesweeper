@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {GameStatuses, ITileItem, TileStatuses} from '../../../models/models';
 import './tile.scss';
 import {useAppDispatch, useAppSelector} from '../../../hook';
-import {updateGameStatus} from '../../../store/slices/mineSlice';
+import {updateExplodedMineCoordinates, updateGameStatus} from '../../../store/slices/mineSlice';
 
 const Tile: React.FC<ITileItem> = ({
                                        status,
@@ -15,6 +15,7 @@ const Tile: React.FC<ITileItem> = ({
                                        renderCount = 0
                                    }) => {
     const gameStatus = useAppSelector(state => state.mine.gameStatus);
+    const explodedTile = useAppSelector(state => state.mine.explodedMineCoordinates);
     const [tileStatus, setTileStatus] = useState<TileStatuses>(borderTile ? status : TileStatuses.TileDefault);
     const tileContainer = useRef<HTMLDivElement>(null);
 
@@ -55,7 +56,9 @@ const Tile: React.FC<ITileItem> = ({
             if (gameStatus !== GameStatuses.Begin) {
                 generator(tileCoordinates);
             } else {
-                setTileStatus(TileStatuses.TileMine);
+                dispatch(updateGameStatus(GameStatuses.End));
+                dispatch(updateExplodedMineCoordinates(tileCoordinates));
+                setTileStatus(TileStatuses.TileMineExploded);
             }
         } else {
             checkNeighbours();
@@ -67,6 +70,12 @@ const Tile: React.FC<ITileItem> = ({
             tileContainer.current.ondragstart = () => false;
         }
     }, [tileContainer]);
+
+    useEffect(() => {
+        if (gameStatus === GameStatuses.End && status === TileStatuses.TileMine && explodedTile !== tileCoordinates) {
+            setTileStatus(status);
+        }
+    }, [gameStatus]);
 
     useEffect(() => {
         if (borderTile) {
@@ -83,7 +92,11 @@ const Tile: React.FC<ITileItem> = ({
 
     return (
         <div className="app__content-down-tile"
-             onClick={() => checkTileStatus()}
+             onClick={() => {
+                 if (gameStatus !== GameStatuses.End){
+                     return checkTileStatus()
+                 }
+             }}
              ref={tileContainer}>
             <img src={tileStatus} alt=""/>
         </div>

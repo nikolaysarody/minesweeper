@@ -5,14 +5,16 @@ interface MineState {
     count: number;
     timer: number;
     gameStatus: GameStatuses;
-    smileStatus: SmileStatuses
+    smileStatus: SmileStatuses;
+    explodedMineCoordinates: number[]
 }
 
 const initialState: MineState = {
     count: 0,
     timer: 0,
     gameStatus: GameStatuses.Idle,
-    smileStatus: SmileStatuses.Smile
+    smileStatus: SmileStatuses.Smile,
+    explodedMineCoordinates: []
 }
 
 const mineSlice = createSlice({
@@ -31,9 +33,13 @@ const mineSlice = createSlice({
         updateSmileStatus(state, action: PayloadAction<SmileStatuses>) {
             state.smileStatus = action.payload;
         }
+        ,
+        updateExplodedMineCoordinates(state, action: PayloadAction<number[]>) {
+            state.explodedMineCoordinates = action.payload;
+        }
     },
 });
 
-export const {updateTimer, updateCount, updateGameStatus, updateSmileStatus} = mineSlice.actions;
+export const {updateTimer, updateCount, updateGameStatus, updateSmileStatus, updateExplodedMineCoordinates} = mineSlice.actions;
 
 export default mineSlice.reducer;
