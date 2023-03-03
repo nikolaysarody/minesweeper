@@ -14,6 +14,82 @@ const GameField: React.FC = () => {
         return a1.toString() === a2.toString();
     }
 
+    const checkNeighbours = (neighbours: number) => {
+        switch (neighbours) {
+            case 1:
+                return TileStatuses.TileOne;
+            case 2:
+                return TileStatuses.TileTwo;
+            case 3:
+                return TileStatuses.TileThree;
+            case 4:
+                return TileStatuses.TileFour;
+            case 5:
+                return TileStatuses.TileFive;
+            case 6:
+                return TileStatuses.TileSix;
+            case 7:
+                return TileStatuses.TileSeven;
+            case 8:
+                return TileStatuses.TileEight;
+            default: {
+                return TileStatuses.TileVoid;
+            }
+        }
+    }
+
+    const waveGenerator = (coordinates: number[]) => {
+        const newArr = tileArr.slice();
+        newArr.forEach((array, arrayIndex) => {
+            array.forEach((item, itemIndex) => {
+                if (arrayIndex === coordinates[0] && itemIndex === coordinates[1]) {
+                    item.status = checkNeighbours(item.neighbours);
+                    item.borderTile = true;
+                    item.renderCount = item.renderCount ? item.renderCount + 1 : 1;
+                    if (item.status === TileStatuses.TileVoid) {
+                        if (itemIndex > 0) {
+                            array[itemIndex - 1].borderTile = true;
+                            array[itemIndex - 1].status = checkNeighbours(array[itemIndex - 1].neighbours);
+                        }
+                        if (newArr[arrayIndex - 1]) {
+                            if (newArr[arrayIndex - 1][itemIndex]) {
+                                newArr[arrayIndex - 1][itemIndex].borderTile = true;
+                                newArr[arrayIndex - 1][itemIndex].status = checkNeighbours(newArr[arrayIndex - 1][itemIndex].neighbours);
+                            }
+                            if (newArr[arrayIndex - 1][itemIndex - 1]) {
+                                newArr[arrayIndex - 1][itemIndex - 1].borderTile = true;
+                                newArr[arrayIndex - 1][itemIndex - 1].status = checkNeighbours(newArr[arrayIndex - 1][itemIndex - 1].neighbours);
+                            }
+                            if (newArr[arrayIndex - 1][itemIndex + 1]) {
+                                newArr[arrayIndex - 1][itemIndex + 1].borderTile = true;
+                                newArr[arrayIndex - 1][itemIndex + 1].status = checkNeighbours(newArr[arrayIndex - 1][itemIndex + 1].neighbours);
+                            }
+                        }
+                        if (newArr[arrayIndex] && newArr[arrayIndex][itemIndex + 1]) {
+                            array[itemIndex + 1].borderTile = true;
+                            array[itemIndex + 1].status = checkNeighbours(array[itemIndex + 1].neighbours);
+                        }
+                        if (newArr[arrayIndex + 1]) {
+                            if (newArr[arrayIndex + 1][itemIndex]) {
+                                newArr[arrayIndex + 1][itemIndex].borderTile = true;
+                                newArr[arrayIndex + 1][itemIndex].status = checkNeighbours(newArr[arrayIndex + 1][itemIndex].neighbours);
+                            }
+                            if (newArr[arrayIndex + 1][itemIndex - 1]) {
+                                newArr[arrayIndex + 1][itemIndex - 1].borderTile = true;
+                                newArr[arrayIndex + 1][itemIndex - 1].status = checkNeighbours(newArr[arrayIndex + 1][itemIndex - 1].neighbours);
+                            }
+                            if (newArr[arrayIndex + 1][itemIndex + 1]) {
+                                newArr[arrayIndex + 1][itemIndex + 1].borderTile = true;
+                                newArr[arrayIndex + 1][itemIndex + 1].status = checkNeighbours(newArr[arrayIndex + 1][itemIndex + 1].neighbours);
+                            }
+                        }
+                    }
+                }
+            });
+        });
+        setTileArr(newArr);
+    }
+
     const generateMineField = (ignore?: number[]) => {
         let count = 0;
         const arrColumns: ITile[][] = [];
@@ -96,8 +172,8 @@ const GameField: React.FC = () => {
                         }
                     }
                 }
-            })
-        })
+            });
+        });
         setTileArr(arrColumns);
     }
 
@@ -114,7 +190,10 @@ const GameField: React.FC = () => {
                               neighbours={item.neighbours} key={v4()}
                               generator={generateMineField}
                               tileCoordinates={item.tileCoordinates}
-                              pressedTile={item.pressedTile}/>
+                              pressedTile={item.pressedTile}
+                              borderTile={item.borderTile}
+                              waveGenerator={waveGenerator}
+                              renderCount={item.renderCount}/>
                     );
                 });
             })}

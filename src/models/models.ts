@@ -28,7 +28,7 @@ export enum TileStatuses {
     TileMineWrong = '/img/tile/mine-wrong.png',
     TileQuestion = '/img/tile/question.png',
     TileQuestionPressed = '/img/tile/question-pressed.png',
-    TileFlag = '/img/tile/flag.png'
+    TileFlag = '/img/tile/flag.png',
 }
 
 export enum Numbers {
@@ -48,7 +48,9 @@ export interface ITile {
     status: TileStatuses,
     neighbours: number,
     tileCoordinates: number[],
-    pressedTile: boolean
+    pressedTile: boolean,
+    borderTile?: boolean,
+    renderCount?: number
 }
 
 export interface ITileItem {
@@ -56,5 +58,8 @@ export interface ITileItem {
     neighbours: number,
     generator: (agr: number[]) => void,
     tileCoordinates: number[],
-    pressedTile: boolean
+    pressedTile: boolean,
+    borderTile?: boolean,
+    waveGenerator: (agr: number[]) => void,
+    renderCount?: number
 }
