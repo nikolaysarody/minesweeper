@@ -1,8 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {GameStatuses, ITileItem, TileStatuses} from '../../../models/models';
+import {GameStatuses, ITileItem, SmileStatuses, TileStatuses} from '../../../models/models';
 import './tile.scss';
 import {useAppDispatch, useAppSelector} from '../../../hook';
-import {updateExplodedMineCoordinates, updateGameStatus} from '../../../store/slices/mineSlice';
+import {updateExplodedMineCoordinates, updateGameStatus, updateSmileStatus} from '../../../store/slices/mineSlice';
 
 const Tile: React.FC<ITileItem> = ({
                                        status,
@@ -48,20 +48,19 @@ const Tile: React.FC<ITileItem> = ({
     }
 
     const checkTileStatus = () => {
-        dispatch(updateGameStatus(GameStatuses.Begin));
+        if (gameStatus !== GameStatuses.Begin) {
+            dispatch(updateGameStatus(GameStatuses.Begin));
+        }
         if (status !== TileStatuses.TileMine) {
             waveGenerator(tileCoordinates);
-        }
-        if (status === TileStatuses.TileMine) {
-            if (gameStatus !== GameStatuses.Begin) {
-                generator(tileCoordinates);
-            } else {
-                dispatch(updateGameStatus(GameStatuses.End));
-                dispatch(updateExplodedMineCoordinates(tileCoordinates));
-                setTileStatus(TileStatuses.TileMineExploded);
-            }
-        } else {
             checkNeighbours();
+        } else if (gameStatus !== GameStatuses.Begin) {
+            generator(tileCoordinates);
+        } else {
+            dispatch(updateGameStatus(GameStatuses.End));
+            dispatch(updateExplodedMineCoordinates(tileCoordinates));
+            dispatch(updateSmileStatus(SmileStatuses.Dead));
+            // setTileStatus(TileStatuses.TileMineExploded);
         }
     }
 
@@ -72,8 +71,12 @@ const Tile: React.FC<ITileItem> = ({
     }, [tileContainer]);
 
     useEffect(() => {
-        if (gameStatus === GameStatuses.End && status === TileStatuses.TileMine && explodedTile !== tileCoordinates) {
-            setTileStatus(status);
+        if (gameStatus === GameStatuses.End && status === TileStatuses.TileMine) {
+            if(explodedTile !== tileCoordinates) {
+                setTileStatus(status);
+            } else {
+                setTileStatus(TileStatuses.TileMineExploded);
+            }
         }
     }, [gameStatus]);
 
@@ -94,10 +97,12 @@ const Tile: React.FC<ITileItem> = ({
         <div className="app__content-down-tile"
              onClick={() => {
                  if (gameStatus !== GameStatuses.End){
-                     return checkTileStatus()
+                     return checkTileStatus();
                  }
              }}
-             ref={tileContainer}>
+             ref={tileContainer}
+             onMouseDown={() => gameStatus !== GameStatuses.End ? dispatch(updateSmileStatus(SmileStatuses.Scary)) : null}
+             onMouseUp={() => gameStatus !== GameStatuses.End ? dispatch(updateSmileStatus(SmileStatuses.Smile)) : null}>
             <img src={tileStatus} alt=""/>
         </div>
     );

@@ -2,11 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {v4} from 'uuid';
 import './gameField.scss';
 import Tile from './tile/tile';
-import {ITile, TileStatuses} from '../../models/models';
-import {useAppDispatch} from '../../hook';
-import {updateCount} from '../../store/slices/mineSlice';
+import {GameStatuses, ITile, TileStatuses} from '../../models/models';
+import {useAppDispatch, useAppSelector} from '../../hook';
+import {updateCount, updateGameStatus} from '../../store/slices/mineSlice';
 
 const GameField: React.FC = () => {
+    const gameStatus = useAppSelector(state => state.mine.gameStatus);
     const [tileArr, setTileArr] = useState<ITile[][]>([]);
     const dispatch = useAppDispatch();
 
@@ -176,6 +177,14 @@ const GameField: React.FC = () => {
         });
         setTileArr(arrColumns);
     }
+
+    useEffect(() => {
+        console.log(gameStatus)
+        if (gameStatus === GameStatuses.Restart) {
+            dispatch(updateGameStatus(GameStatuses.Idle));
+            generateMineField();
+        }
+    }, [gameStatus]);
 
     useEffect(() => {
         generateMineField();

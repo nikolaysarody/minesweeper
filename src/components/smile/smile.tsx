@@ -1,13 +1,17 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {useAppSelector} from '../../hook';
-import {SmileStatuses} from '../../models/models';
+import {useAppDispatch, useAppSelector} from '../../hook';
+import {GameStatuses, SmileStatuses} from '../../models/models';
 import './smile.scss';
+import {updateGameStatus} from '../../store/slices/mineSlice';
 
 
 const Smile: React.FC = () => {
+    // const gameStatus = useAppSelector(state => state.mine.gameStatus);
     const smileStatus = useAppSelector(state => state.mine.smileStatus);
     const [display, setDisplay] = useState<SmileStatuses>(SmileStatuses.Smile);
     const smileContainer = useRef<HTMLDivElement>(null);
+
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         if (smileContainer.current) {
@@ -21,7 +25,8 @@ const Smile: React.FC = () => {
 
     return (
         <div className="app__content-top-smile"
-             onMouseDown={() => setDisplay(SmileStatuses.PressedSmile)}
+             onClick={() => dispatch(updateGameStatus(GameStatuses.Restart))}
+             onMouseDown={() => smileStatus === SmileStatuses.Smile ? setDisplay(SmileStatuses.PressedSmile) : null}
              onMouseUp={() => setDisplay(smileStatus)}
              onMouseOut={() => setDisplay(smileStatus)}
              ref={smileContainer}>

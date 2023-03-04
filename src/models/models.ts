@@ -9,7 +9,8 @@ export enum SmileStatuses {
 export enum GameStatuses {
     Idle = 'IDLE',
     Begin = 'BEGIN',
-    End = 'END'
+    End = 'END',
+    Restart = 'RESTART'
 }
 
 export enum TileStatuses {

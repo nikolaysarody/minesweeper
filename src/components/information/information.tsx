@@ -15,6 +15,9 @@ const Information: React.FC = () => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
+        if (gameStatus === GameStatuses.Idle) {
+            setDisplayTimer(0);
+        }
         if (gameStatus === GameStatuses.Begin){
             const timer = setInterval(() => {
                 setDisplayTimer((prev) => prev + 1);
@@ -22,6 +25,8 @@ const Information: React.FC = () => {
             return () => clearInterval(timer);
         }
     }, [gameStatus]);
+
+
 
     useEffect(() => {
         dispatch(updateTimer(displayTimer));
