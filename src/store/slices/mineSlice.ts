@@ -12,7 +12,7 @@ interface MineState {
 }
 
 const initialState: MineState = {
-    count: 0,
+    count: 40,
     timer: 0,
     gameStatus: GameStatuses.Idle,
     smileStatus: SmileStatuses.Smile,
@@ -42,6 +42,7 @@ const mineSlice = createSlice({
         },
         addFlagMinesCoordinates(state, action: PayloadAction<number[]>) {
             state.flagMinesCoordinates.push(action.payload);
+            state.count = state.count - 1;
         },
         removeFlagMinesCoordinates(state, action: PayloadAction<number[]>) {
             state.flagMinesCoordinates.forEach((item, index) => {
@@ -49,9 +50,11 @@ const mineSlice = createSlice({
                     state.flagMinesCoordinates.splice(index, 1);
                 }
             })
+            state.count = state.count + 1;
         },
         deleteFlagMinesCoordinates(state) {
             state.flagMinesCoordinates = [];
+            state.count = 40;
         },
         addQuestionMinesCoordinates(state, action: PayloadAction<number[]>) {
             state.questionMinesCoordinates.push(action.payload);

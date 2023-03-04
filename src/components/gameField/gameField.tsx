@@ -4,7 +4,7 @@ import './gameField.scss';
 import Tile from './tile/tile';
 import {GameStatuses, ITile, TileStatuses} from '../../models/models';
 import {useAppDispatch, useAppSelector} from '../../hook';
-import {updateCount, updateGameStatus} from '../../store/slices/mineSlice';
+import {removeFlagMinesCoordinates, updateGameStatus} from '../../store/slices/mineSlice';
 
 const GameField: React.FC = () => {
     const flagCoordinates = useAppSelector(state => state.mine.flagMinesCoordinates);
@@ -17,17 +17,21 @@ const GameField: React.FC = () => {
         return a1.toString() === a2.toString();
     }
     const compareMatrixArray = (arr: number[], matrix: number[][] = []) => {
-        let count = false;
+        let equal = false;
         matrix.forEach((array) => {
             if (arr.toString() === array.toString()) {
-                count = true
+                equal = true
             }
         });
-        return count;
+        return equal;
     }
 
-    const checkNeighbours = (neighbours: number): TileStatuses => {
-        // if (tileStatus !== TileStatuses.TileQuestion && tileStatus !== TileStatuses.TileFlag && tileStatus !== TileStatuses.TileQuestionPressed) {
+    const checkNeighbours = (neighbours: number, coordinates?: number[]): TileStatuses => {
+        console.log('checkNeighbours')
+        if (coordinates && compareMatrixArray(coordinates, flagCoordinates)) {
+
+            dispatch(removeFlagMinesCoordinates(coordinates));
+        }
         switch (neighbours) {
             case 1:
                 return TileStatuses.TileOne;
@@ -49,8 +53,6 @@ const GameField: React.FC = () => {
                 return TileStatuses.TileVoid;
             }
         }
-        // }
-        // return tileStatus;
     }
 
     const waveGenerator = (coordinates: number[]) => {
@@ -58,7 +60,7 @@ const GameField: React.FC = () => {
         newArr.forEach((array, arrayIndex) => {
             array.forEach((item, itemIndex) => {
                 if (arrayIndex === coordinates[0] && itemIndex === coordinates[1]) {
-                    item.status = checkNeighbours(item.neighbours);
+                    item.status = checkNeighbours(item.neighbours, coordinates);
                     item.borderTile = true;
                     item.renderCount = item.renderCount ? item.renderCount + 1 : 1;
                     if (item.status === TileStatuses.TileVoid) {
@@ -66,7 +68,6 @@ const GameField: React.FC = () => {
                             array[itemIndex - 1].borderTile = true;
                             array[itemIndex - 1].status = checkNeighbours(array[itemIndex - 1].neighbours);
                         }
-                        // flagCoordinates.includes(coordinates) ? TileStatuses.TileFlag :
                         if (newArr[arrayIndex - 1]) {
                             if (newArr[arrayIndex - 1][itemIndex]) {
                                 newArr[arrayIndex - 1][itemIndex].borderTile = true;
@@ -124,10 +125,10 @@ const GameField: React.FC = () => {
                         }
                         if (!arrColumns[i]) {
                             count++;
-                            dispatch(updateCount(count));
+                            // dispatch(updateCount(count));
                         } else if (arrColumns[i][j] && arrColumns[i][j].status !== TileStatuses.TileMine) {
                             count++;
-                            dispatch(updateCount(count));
+                            // dispatch(updateCount(count));
                         }
                     } else {
                         if (!arrColumns[i]) {

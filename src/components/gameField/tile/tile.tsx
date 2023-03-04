@@ -43,7 +43,7 @@ const Tile: React.FC<ITileItem> = ({
     const dispatch = useAppDispatch();
 
     const checkNeighbours = () => {
-        if (tileStatus !== TileStatuses.TileQuestion && tileStatus !== TileStatuses.TileFlag && tileStatus !== TileStatuses.TileQuestionPressed) {
+        // if (tileStatus !== TileStatuses.TileQuestion && tileStatus !== TileStatuses.TileFlag && tileStatus !== TileStatuses.TileQuestionPressed) {
             setTileStatus(() => {
                 switch (neighbours) {
                     case 1:
@@ -67,7 +67,7 @@ const Tile: React.FC<ITileItem> = ({
                     }
                 }
             });
-        }
+        // }
     }
 
     const checkTileStatus = () => {
