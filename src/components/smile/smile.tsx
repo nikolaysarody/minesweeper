@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../hook';
 import {GameStatuses, SmileStatuses} from '../../models/models';
 import './smile.scss';
-import {updateGameStatus} from '../../store/slices/mineSlice';
+import {deleteFlagMinesCoordinates, updateGameStatus} from '../../store/slices/mineSlice';
 
 
 const Smile: React.FC = () => {
@@ -25,7 +25,10 @@ const Smile: React.FC = () => {
 
     return (
         <div className="app__content-top-smile"
-             onClick={() => dispatch(updateGameStatus(GameStatuses.Restart))}
+             onClick={() => {
+                 dispatch(updateGameStatus(GameStatuses.Restart));
+                 dispatch(deleteFlagMinesCoordinates());
+             }}
              onMouseDown={() => smileStatus === SmileStatuses.Smile ? setDisplay(SmileStatuses.PressedSmile) : null}
              onMouseUp={() => setDisplay(smileStatus)}
              onMouseOut={() => setDisplay(smileStatus)}

@@ -16,6 +16,9 @@ const Information: React.FC = () => {
 
     useEffect(() => {
         if (gameStatus === GameStatuses.Idle) {
+            if (timer) {
+                clearInterval(timer);
+            }
             setDisplayTimer(0);
         }
         if (gameStatus === GameStatuses.Begin){

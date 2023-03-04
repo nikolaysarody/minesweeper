@@ -6,7 +6,9 @@ interface MineState {
     timer: number;
     gameStatus: GameStatuses;
     smileStatus: SmileStatuses;
-    explodedMineCoordinates: number[]
+    explodedMineCoordinates: number[],
+    flagMinesCoordinates: number[][],
+    questionMinesCoordinates: number[][]
 }
 
 const initialState: MineState = {
@@ -14,7 +16,9 @@ const initialState: MineState = {
     timer: 0,
     gameStatus: GameStatuses.Idle,
     smileStatus: SmileStatuses.Smile,
-    explodedMineCoordinates: []
+    explodedMineCoordinates: [],
+    flagMinesCoordinates: [],
+    questionMinesCoordinates: []
 }
 
 const mineSlice = createSlice({
@@ -32,14 +36,51 @@ const mineSlice = createSlice({
         },
         updateSmileStatus(state, action: PayloadAction<SmileStatuses>) {
             state.smileStatus = action.payload;
-        }
-        ,
+        },
         updateExplodedMineCoordinates(state, action: PayloadAction<number[]>) {
             state.explodedMineCoordinates = action.payload;
+        },
+        addFlagMinesCoordinates(state, action: PayloadAction<number[]>) {
+            state.flagMinesCoordinates.push(action.payload);
+        },
+        removeFlagMinesCoordinates(state, action: PayloadAction<number[]>) {
+            state.flagMinesCoordinates.forEach((item, index) => {
+                if (item.toString() === action.payload.toString()) {
+                    state.flagMinesCoordinates.splice(index, 1);
+                }
+            })
+        },
+        deleteFlagMinesCoordinates(state) {
+            state.flagMinesCoordinates = [];
+        },
+        addQuestionMinesCoordinates(state, action: PayloadAction<number[]>) {
+            state.questionMinesCoordinates.push(action.payload);
+        },
+        removeQuestionMinesCoordinates(state, action: PayloadAction<number[]>) {
+            state.questionMinesCoordinates.forEach((item, index) => {
+                if (item.toString() === action.payload.toString()) {
+                    state.questionMinesCoordinates.splice(index, 1);
+                }
+            })
+        },
+        deleteQuestionMinesCoordinates(state) {
+            state.questionMinesCoordinates = [];
         }
     },
 });
 
-export const {updateTimer, updateCount, updateGameStatus, updateSmileStatus, updateExplodedMineCoordinates} = mineSlice.actions;
+export const {
+    updateTimer,
+    updateCount,
+    updateGameStatus,
+    updateSmileStatus,
+    updateExplodedMineCoordinates,
+    addFlagMinesCoordinates,
+    removeFlagMinesCoordinates,
+    deleteFlagMinesCoordinates,
+    addQuestionMinesCoordinates,
+    removeQuestionMinesCoordinates,
+    deleteQuestionMinesCoordinates
+} = mineSlice.actions;
 
 export default mineSlice.reducer;
