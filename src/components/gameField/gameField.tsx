@@ -122,7 +122,6 @@ const GameField: React.FC = () => {
     const generateMineField = (ignore?: number[]) => {
         dispatch(deleteMineCoordinates());
         let count = 0;
-        // let ss = 0;
         let cycleCount = 0;
         const arrColumns: ITile[][] = [];
         while (count < 40) {
@@ -222,7 +221,6 @@ const GameField: React.FC = () => {
         if (gameStatus === GameStatuses.Restart) {
             dispatch(updateGameStatus(GameStatuses.Idle));
             dispatch(updateSmileStatus(SmileStatuses.Smile));
-            // dispatch(deleteMineCoordinates());
             generateMineField();
         }
         if (gameStatus === GameStatuses.Win) {
@@ -237,7 +235,6 @@ const GameField: React.FC = () => {
     }, [mineCount]);
 
     useEffect(() => {
-        // dispatch(deleteMineCoordinates());
         generateMineField();
     }, []);
 

@@ -7,7 +7,6 @@ import {updateGameStatus} from '../../store/slices/gameSlice';
 
 
 const Smile: React.FC = () => {
-    // const gameStatus = useAppSelector(state => state.mine.gameStatus);
     const smileStatus = useAppSelector(state => state.game.smileStatus);
     const [display, setDisplay] = useState<SmileStatuses>(SmileStatuses.Smile);
     const smileContainer = useRef<HTMLDivElement>(null);
