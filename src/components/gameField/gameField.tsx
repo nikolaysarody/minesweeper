@@ -27,9 +27,7 @@ const GameField: React.FC = () => {
     }
 
     const checkNeighbours = (neighbours: number, coordinates?: number[]): TileStatuses => {
-        console.log('checkNeighbours')
         if (coordinates && compareMatrixArray(coordinates, flagCoordinates)) {
-
             dispatch(removeFlagMinesCoordinates(coordinates));
         }
         switch (neighbours) {
@@ -115,6 +113,7 @@ const GameField: React.FC = () => {
                 const arrRows: ITile[] = [];
                 for (let j = 0; j < 16; j++) {
                     if (Math.round(Math.random() * (5 - 1) + 1) === 5 && count < 40 && !compareTwoArray([i, j], ignore)) {
+
                         arrRows[j] = {
                             status: TileStatuses.TileMine,
                             neighbours: 0,

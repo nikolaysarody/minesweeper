@@ -3,7 +3,10 @@ import {GameStatuses, ITileItem, SmileStatuses, TileStatuses} from '../../../mod
 import './tile.scss';
 import {useAppDispatch, useAppSelector} from '../../../hook';
 import {
-    addFlagMinesCoordinates, addQuestionMinesCoordinates, removeFlagMinesCoordinates, removeQuestionMinesCoordinates,
+    addFlagMinesCoordinates,
+    addQuestionMinesCoordinates,
+    removeFlagMinesCoordinates,
+    removeQuestionMinesCoordinates,
     updateExplodedMineCoordinates,
     updateGameStatus,
     updateSmileStatus
@@ -32,9 +35,9 @@ const Tile: React.FC<ITileItem> = ({
             return TileStatuses.TileFlag;
         } else if (questionCoordinates.includes(tileCoordinates) || question) {
             return TileStatuses.TileQuestion;
-        } else if (status === TileStatuses.TileMine) {
-            return status;
-        } else {
+        }else if (status === TileStatuses.TileMine) {
+            return TileStatuses.TileMine;
+        }else {
             return TileStatuses.TileDefault;
         }
     });
@@ -104,11 +107,17 @@ const Tile: React.FC<ITileItem> = ({
         if (gameStatus === GameStatuses.Idle) {
             dispatch(updateSmileStatus(SmileStatuses.Smile));
         }
-        if (gameStatus === GameStatuses.End && status === TileStatuses.TileMine) {
-            if (explodedTile !== tileCoordinates) {
-                setTileStatus(status);
-            } else {
-                setTileStatus(TileStatuses.TileMineExploded);
+        if (gameStatus === GameStatuses.End) {
+            if (status === TileStatuses.TileMine) {
+                if (explodedTile !== tileCoordinates) {
+                    if (!flagCoordinates.includes(tileCoordinates)) {
+                        setTileStatus(status);
+                    }
+                } else {
+                    setTileStatus(TileStatuses.TileMineExploded);
+                }
+            } else if (tileStatus === TileStatuses.TileFlag) {
+                setTileStatus(TileStatuses.TileMineWrong);
             }
         }
     }, [gameStatus]);
@@ -141,7 +150,7 @@ const Tile: React.FC<ITileItem> = ({
                  }
              }}
              onContextMenu={() => {
-                 if (gameStatus !== GameStatuses.End) {
+                 if (gameStatus !== GameStatuses.End && tileStatus !== TileStatuses.TileVoid) {
                      if (flagCoordinates.includes(tileCoordinates)) {
                          dispatch(removeFlagMinesCoordinates(tileCoordinates));
                          dispatch(addQuestionMinesCoordinates(tileCoordinates));
