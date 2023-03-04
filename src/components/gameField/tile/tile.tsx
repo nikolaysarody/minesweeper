@@ -55,6 +55,7 @@ const Tile: React.FC<ITileItem> = ({
             waveGenerator(tileCoordinates);
             checkNeighbours();
         } else if (gameStatus !== GameStatuses.Begin) {
+            console.log('rerender')
             generator(tileCoordinates);
         } else {
             dispatch(updateGameStatus(GameStatuses.End));
@@ -71,6 +72,9 @@ const Tile: React.FC<ITileItem> = ({
     }, [tileContainer]);
 
     useEffect(() => {
+        if (gameStatus === GameStatuses.Idle) {
+            dispatch(updateSmileStatus(SmileStatuses.Smile));
+        }
         if (gameStatus === GameStatuses.End && status === TileStatuses.TileMine) {
             if(explodedTile !== tileCoordinates) {
                 setTileStatus(status);
@@ -87,9 +91,16 @@ const Tile: React.FC<ITileItem> = ({
             }
             checkNeighbours();
         }
-        if (pressedTile) {
-            dispatch(updateGameStatus(GameStatuses.Begin));
-            checkNeighbours();
+        if (pressedTile && gameStatus !== GameStatuses.End) {
+            if (gameStatus !== GameStatuses.Begin) {
+                dispatch(updateGameStatus(GameStatuses.Begin));
+            }
+            if (status !== TileStatuses.TileMine) {
+                if (renderCount < 1) {
+                    waveGenerator(tileCoordinates);
+                    checkNeighbours();
+                }
+            }
         }
     }, []);
 

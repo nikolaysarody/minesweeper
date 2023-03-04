@@ -125,7 +125,7 @@ const GameField: React.FC = () => {
                                 status: TileStatuses.TileMine,
                                 neighbours: 0,
                                 tileCoordinates: [i, j],
-                                pressedTile: compareTwoArray([i, j], ignore)
+                                pressedTile: false
                             }
                         } else {
                             arrRows[j] = {
