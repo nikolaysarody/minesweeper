@@ -2,16 +2,13 @@ import React, {useEffect, useRef, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../hook';
 import {GameStatuses, SmileStatuses} from '../../models/models';
 import './smile.scss';
-import {
-    deleteFlagMinesCoordinates,
-    deleteQuestionMinesCoordinates,
-    updateGameStatus
-} from '../../store/slices/mineSlice';
+import {deleteFlagMinesCoordinates, deleteQuestionMinesCoordinates} from '../../store/slices/mineSlice';
+import {updateGameStatus} from '../../store/slices/gameSlice';
 
 
 const Smile: React.FC = () => {
     // const gameStatus = useAppSelector(state => state.mine.gameStatus);
-    const smileStatus = useAppSelector(state => state.mine.smileStatus);
+    const smileStatus = useAppSelector(state => state.game.smileStatus);
     const [display, setDisplay] = useState<SmileStatuses>(SmileStatuses.Smile);
     const smileContainer = useRef<HTMLDivElement>(null);
 

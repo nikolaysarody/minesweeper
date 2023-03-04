@@ -1,89 +1,76 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {GameStatuses, SmileStatuses} from '../../models/models';
 
 interface MineState {
     count: number;
-    timer: number;
-    gameStatus: GameStatuses;
-    smileStatus: SmileStatuses;
     explodedMineCoordinates: number[],
-    flagMinesCoordinates: number[][],
-    questionMinesCoordinates: number[][]
+    flagCoordinates: number[][],
+    questionCoordinates: number[][],
+    mineCoordinates: number[][],
 }
 
 const initialState: MineState = {
     count: 40,
-    timer: 0,
-    gameStatus: GameStatuses.Idle,
-    smileStatus: SmileStatuses.Smile,
     explodedMineCoordinates: [],
-    flagMinesCoordinates: [],
-    questionMinesCoordinates: []
+    flagCoordinates: [],
+    questionCoordinates: [],
+    mineCoordinates: []
 }
 
 const mineSlice = createSlice({
     name: 'mine',
     initialState,
     reducers: {
-        updateTimer(state, action: PayloadAction<number>) {
-            state.timer = action.payload;
-        },
-        updateCount(state, action: PayloadAction<number>) {
-            state.count = action.payload;
-        },
-        updateGameStatus(state, action: PayloadAction<GameStatuses>) {
-            state.gameStatus = action.payload;
-        },
-        updateSmileStatus(state, action: PayloadAction<SmileStatuses>) {
-            state.smileStatus = action.payload;
-        },
         updateExplodedMineCoordinates(state, action: PayloadAction<number[]>) {
             state.explodedMineCoordinates = action.payload;
         },
         addFlagMinesCoordinates(state, action: PayloadAction<number[]>) {
-            state.flagMinesCoordinates.push(action.payload);
+            state.flagCoordinates.push(action.payload);
             state.count = state.count - 1;
         },
         removeFlagMinesCoordinates(state, action: PayloadAction<number[]>) {
-            state.flagMinesCoordinates.forEach((item, index) => {
+            state.flagCoordinates.forEach((item, index) => {
                 if (item.toString() === action.payload.toString()) {
-                    state.flagMinesCoordinates.splice(index, 1);
+                    state.flagCoordinates.splice(index, 1);
                 }
             })
             state.count = state.count + 1;
         },
         deleteFlagMinesCoordinates(state) {
-            state.flagMinesCoordinates = [];
+            state.flagCoordinates = [];
             state.count = 40;
         },
         addQuestionMinesCoordinates(state, action: PayloadAction<number[]>) {
-            state.questionMinesCoordinates.push(action.payload);
+            state.questionCoordinates.push(action.payload);
         },
         removeQuestionMinesCoordinates(state, action: PayloadAction<number[]>) {
-            state.questionMinesCoordinates.forEach((item, index) => {
+            state.questionCoordinates.forEach((item, index) => {
                 if (item.toString() === action.payload.toString()) {
-                    state.questionMinesCoordinates.splice(index, 1);
+                    state.questionCoordinates.splice(index, 1);
                 }
             })
         },
         deleteQuestionMinesCoordinates(state) {
-            state.questionMinesCoordinates = [];
-        }
+            state.questionCoordinates = [];
+        },
+        updateMineCoordinates(state, action: PayloadAction<number[]>) {
+            state.mineCoordinates.push(action.payload);
+        },
+        deleteMineCoordinates(state) {
+            state.mineCoordinates = [];
+        },
     },
 });
 
 export const {
-    updateTimer,
-    updateCount,
-    updateGameStatus,
-    updateSmileStatus,
     updateExplodedMineCoordinates,
     addFlagMinesCoordinates,
     removeFlagMinesCoordinates,
     deleteFlagMinesCoordinates,
     addQuestionMinesCoordinates,
     removeQuestionMinesCoordinates,
-    deleteQuestionMinesCoordinates
+    deleteQuestionMinesCoordinates,
+    updateMineCoordinates,
+    deleteMineCoordinates
 } = mineSlice.actions;
 
 export default mineSlice.reducer;

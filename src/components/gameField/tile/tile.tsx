@@ -7,10 +7,9 @@ import {
     addQuestionMinesCoordinates,
     removeFlagMinesCoordinates,
     removeQuestionMinesCoordinates,
-    updateExplodedMineCoordinates,
-    updateGameStatus,
-    updateSmileStatus
+    updateExplodedMineCoordinates
 } from '../../../store/slices/mineSlice';
+import {updateGameStatus, updateSmileStatus} from '../../../store/slices/gameSlice';
 
 const Tile: React.FC<ITileItem> = ({
                                        status,
@@ -24,10 +23,10 @@ const Tile: React.FC<ITileItem> = ({
                                        flag,
                                        question
                                    }) => {
-    const gameStatus = useAppSelector(state => state.mine.gameStatus);
+    const gameStatus = useAppSelector(state => state.game.gameStatus);
     const explodedTile = useAppSelector(state => state.mine.explodedMineCoordinates);
-    const flagCoordinates = useAppSelector(state => state.mine.flagMinesCoordinates);
-    const questionCoordinates = useAppSelector(state => state.mine.questionMinesCoordinates);
+    const flagCoordinates = useAppSelector(state => state.mine.flagCoordinates);
+    const questionCoordinates = useAppSelector(state => state.mine.questionCoordinates);
     const [tileStatus, setTileStatus] = useState<TileStatuses>(() => {
         if (borderTile) {
             return status;
@@ -35,9 +34,7 @@ const Tile: React.FC<ITileItem> = ({
             return TileStatuses.TileFlag;
         } else if (questionCoordinates.includes(tileCoordinates) || question) {
             return TileStatuses.TileQuestion;
-        }else if (status === TileStatuses.TileMine) {
-            return TileStatuses.TileMine;
-        }else {
+        } else {
             return TileStatuses.TileDefault;
         }
     });
@@ -46,45 +43,40 @@ const Tile: React.FC<ITileItem> = ({
     const dispatch = useAppDispatch();
 
     const checkNeighbours = () => {
-        // if (tileStatus !== TileStatuses.TileQuestion && tileStatus !== TileStatuses.TileFlag && tileStatus !== TileStatuses.TileQuestionPressed) {
-            setTileStatus(() => {
-                switch (neighbours) {
-                    case 1:
-                        return TileStatuses.TileOne;
-                    case 2:
-                        return TileStatuses.TileTwo;
-                    case 3:
-                        return TileStatuses.TileThree;
-                    case 4:
-                        return TileStatuses.TileFour;
-                    case 5:
-                        return TileStatuses.TileFive;
-                    case 6:
-                        return TileStatuses.TileSix;
-                    case 7:
-                        return TileStatuses.TileSeven;
-                    case 8:
-                        return TileStatuses.TileEight;
-                    default: {
-                        return TileStatuses.TileVoid;
-                    }
+        setTileStatus(() => {
+            switch (neighbours) {
+                case 1:
+                    return TileStatuses.TileOne;
+                case 2:
+                    return TileStatuses.TileTwo;
+                case 3:
+                    return TileStatuses.TileThree;
+                case 4:
+                    return TileStatuses.TileFour;
+                case 5:
+                    return TileStatuses.TileFive;
+                case 6:
+                    return TileStatuses.TileSix;
+                case 7:
+                    return TileStatuses.TileSeven;
+                case 8:
+                    return TileStatuses.TileEight;
+                default: {
+                    return TileStatuses.TileVoid;
                 }
-            });
-        // }
+            }
+        });
     }
 
     const checkTileStatus = () => {
         if (status !== TileStatuses.TileMine) {
             dispatch(updateGameStatus(GameStatuses.Begin));
             if (renderCount && neighbours) {
-                console.log('neighbours')
                 checkNeighbours();
             } else {
-                console.log('wave', neighbours, renderCount)
                 waveGenerator(tileCoordinates, tileStatus);
             }
         } else if (gameStatus !== GameStatuses.Begin) {
-            console.log('rerender')
             generator(tileCoordinates);
         } else {
             dispatch(updateGameStatus(GameStatuses.End));
@@ -104,9 +96,6 @@ const Tile: React.FC<ITileItem> = ({
     }, [tileContainer]);
 
     useEffect(() => {
-        if (gameStatus === GameStatuses.Idle) {
-            dispatch(updateSmileStatus(SmileStatuses.Smile));
-        }
         if (gameStatus === GameStatuses.End) {
             if (status === TileStatuses.TileMine) {
                 if (explodedTile !== tileCoordinates) {
@@ -129,7 +118,7 @@ const Tile: React.FC<ITileItem> = ({
             }
             checkNeighbours();
         }
-        if (pressedTile && gameStatus !== GameStatuses.End) {
+        if (pressedTile && gameStatus !== GameStatuses.End && renderCount === 0) {
             if (gameStatus !== GameStatuses.Begin) {
                 dispatch(updateGameStatus(GameStatuses.Begin));
             }
@@ -145,22 +134,24 @@ const Tile: React.FC<ITileItem> = ({
     return (
         <div className="app__content-down-tile"
              onClick={() => {
-                 if (gameStatus !== GameStatuses.End) {
+                 if (gameStatus !== GameStatuses.End && gameStatus !== GameStatuses.Win) {
                      checkTileStatus();
                  }
              }}
              onContextMenu={() => {
-                 if (gameStatus !== GameStatuses.End && tileStatus !== TileStatuses.TileVoid) {
-                     if (flagCoordinates.includes(tileCoordinates)) {
-                         dispatch(removeFlagMinesCoordinates(tileCoordinates));
-                         dispatch(addQuestionMinesCoordinates(tileCoordinates));
-                         setTileStatus(TileStatuses.TileQuestion);
-                     } else if (questionCoordinates.includes(tileCoordinates)) {
-                         dispatch(removeQuestionMinesCoordinates(tileCoordinates));
-                         setTileStatus(TileStatuses.TileDefault);
-                     } else {
-                         dispatch(addFlagMinesCoordinates(tileCoordinates));
-                         setTileStatus(TileStatuses.TileFlag);
+                 if (gameStatus !== GameStatuses.End && tileStatus !== TileStatuses.TileVoid && gameStatus !== GameStatuses.Win) {
+                     if (tileStatus === TileStatuses.TileDefault || tileStatus === TileStatuses.TileQuestion || tileStatus === TileStatuses.TileFlag || tileStatus === TileStatuses.TileMine) {
+                         if (flagCoordinates.includes(tileCoordinates)) {
+                             dispatch(removeFlagMinesCoordinates(tileCoordinates));
+                             dispatch(addQuestionMinesCoordinates(tileCoordinates));
+                             setTileStatus(TileStatuses.TileQuestion);
+                         } else if (questionCoordinates.includes(tileCoordinates)) {
+                             dispatch(removeQuestionMinesCoordinates(tileCoordinates));
+                             setTileStatus(TileStatuses.TileDefault);
+                         } else {
+                             dispatch(addFlagMinesCoordinates(tileCoordinates));
+                             setTileStatus(TileStatuses.TileFlag);
+                         }
                      }
                  }
              }}

@@ -10,7 +10,8 @@ export enum GameStatuses {
     Idle = 'IDLE',
     Begin = 'BEGIN',
     End = 'END',
-    Restart = 'RESTART'
+    Restart = 'RESTART',
+    Win = 'WIN'
 }
 
 export enum TileStatuses {
@@ -51,22 +52,12 @@ export interface ITile {
     tileCoordinates: number[],
     pressedTile: boolean,
     borderTile?: boolean,
-    renderCount?: number,
-    prevStatus?: TileStatuses,
     flag: boolean,
     question: boolean
+    renderCount?: number,
 }
 
-export interface ITileItem {
-    status: TileStatuses,
-    neighbours: number,
+export interface ITileItem extends ITile  {
     generator: (agr: number[]) => void,
-    tileCoordinates: number[],
-    pressedTile: boolean,
-    borderTile?: boolean,
     waveGenerator: (agr0: number[], agr1: TileStatuses) => void,
-    renderCount?: number,
-    prevStatus?: TileStatuses,
-    flag: boolean,
-    question: boolean
 }

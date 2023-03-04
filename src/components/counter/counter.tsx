@@ -18,7 +18,7 @@ const Counter: React.FC<ICounter> = ({count, side}) => {
     }, [counterContainer]);
 
     useEffect(() => {
-        if (count <= 999) {
+        if (count <= 999 && count >= 0) {
             const number = count.toString().split('');
             while (number.length < 3) {
                 number.unshift('0');
@@ -72,7 +72,11 @@ const Counter: React.FC<ICounter> = ({count, side}) => {
             });
             setDisplay(newDisplay);
         } else {
-            setDisplay([Numbers.NumberNine, Numbers.NumberNine, Numbers.NumberNine]);
+            if (count <= 0){
+                setDisplay([Numbers.NumberZero, Numbers.NumberZero, Numbers.NumberZero]);
+            } else {
+                setDisplay([Numbers.NumberNine, Numbers.NumberNine, Numbers.NumberNine]);
+            }
         }
 
     }, [count]);

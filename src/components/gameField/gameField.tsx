@@ -2,14 +2,21 @@ import React, {useEffect, useState} from 'react';
 import {v4} from 'uuid';
 import './gameField.scss';
 import Tile from './tile/tile';
-import {GameStatuses, ITile, TileStatuses} from '../../models/models';
+import {GameStatuses, ITile, SmileStatuses, TileStatuses} from '../../models/models';
 import {useAppDispatch, useAppSelector} from '../../hook';
-import {removeFlagMinesCoordinates, updateGameStatus} from '../../store/slices/mineSlice';
+import {
+    deleteMineCoordinates,
+    removeFlagMinesCoordinates,
+    updateMineCoordinates,
+} from '../../store/slices/mineSlice';
+import {updateGameStatus, updateSmileStatus} from '../../store/slices/gameSlice';
 
 const GameField: React.FC = () => {
-    const flagCoordinates = useAppSelector(state => state.mine.flagMinesCoordinates);
-    const questionCoordinates = useAppSelector(state => state.mine.questionMinesCoordinates);
-    const gameStatus = useAppSelector(state => state.mine.gameStatus);
+    const mineCount = useAppSelector(state => state.mine.count);
+    const flagCoordinates = useAppSelector(state => state.mine.flagCoordinates);
+    const questionCoordinates = useAppSelector(state => state.mine.questionCoordinates);
+    const mineCoordinates = useAppSelector(state => state.mine.mineCoordinates);
+    const gameStatus = useAppSelector(state => state.game.gameStatus);
     const [tileArr, setTileArr] = useState<ITile[][]>([]);
     const dispatch = useAppDispatch();
 
@@ -17,13 +24,20 @@ const GameField: React.FC = () => {
         return a1.toString() === a2.toString();
     }
     const compareMatrixArray = (arr: number[], matrix: number[][] = []) => {
-        let equal = false;
-        matrix.forEach((array) => {
-            if (arr.toString() === array.toString()) {
-                equal = true
+        return matrix.some((array) => {
+            return arr.toString() === array.toString();
+        });
+    }
+    const compareTwoMatrixArray = (matrix1: number[][], matrix2: number[][]) => {
+        let count = 0;
+        matrix1.forEach((item1) => {
+            if (matrix2.some((item2) => {
+                return compareTwoArray(item1, item2);
+            })) {
+                count = count + 1;
             }
         });
-        return equal;
+        return count;
     }
 
     const checkNeighbours = (neighbours: number, coordinates?: number[]): TileStatuses => {
@@ -106,14 +120,17 @@ const GameField: React.FC = () => {
     }
 
     const generateMineField = (ignore?: number[]) => {
+        dispatch(deleteMineCoordinates());
         let count = 0;
+        // let ss = 0;
+        let cycleCount = 0;
         const arrColumns: ITile[][] = [];
         while (count < 40) {
+            cycleCount = cycleCount + 1;
             for (let i = 0; i < 16; i++) {
                 const arrRows: ITile[] = [];
                 for (let j = 0; j < 16; j++) {
                     if (Math.round(Math.random() * (5 - 1) + 1) === 5 && count < 40 && !compareTwoArray([i, j], ignore)) {
-
                         arrRows[j] = {
                             status: TileStatuses.TileMine,
                             neighbours: 0,
@@ -124,10 +141,10 @@ const GameField: React.FC = () => {
                         }
                         if (!arrColumns[i]) {
                             count++;
-                            // dispatch(updateCount(count));
+                            dispatch(updateMineCoordinates([i, j]));
                         } else if (arrColumns[i][j] && arrColumns[i][j].status !== TileStatuses.TileMine) {
                             count++;
-                            // dispatch(updateCount(count));
+                            dispatch(updateMineCoordinates([i, j]));
                         }
                     } else {
                         if (!arrColumns[i]) {
@@ -202,14 +219,25 @@ const GameField: React.FC = () => {
     }
 
     useEffect(() => {
-        console.log(gameStatus)
         if (gameStatus === GameStatuses.Restart) {
             dispatch(updateGameStatus(GameStatuses.Idle));
+            dispatch(updateSmileStatus(SmileStatuses.Smile));
+            // dispatch(deleteMineCoordinates());
             generateMineField();
+        }
+        if (gameStatus === GameStatuses.Win) {
+            dispatch(updateSmileStatus(SmileStatuses.Cool));
         }
     }, [gameStatus]);
 
     useEffect(() => {
+        if (compareTwoMatrixArray(mineCoordinates, flagCoordinates) === mineCoordinates.length && mineCount === 0) {
+            dispatch(updateGameStatus(GameStatuses.Win));
+        }
+    }, [mineCount]);
+
+    useEffect(() => {
+        // dispatch(deleteMineCoordinates());
         generateMineField();
     }, []);
 

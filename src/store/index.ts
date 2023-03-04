@@ -1,8 +1,10 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import mineSlice from './slices/mineSlice';
+import gameSlice from './slices/gameSlice';
 
 const rootReducer = combineReducers({
-    mine: mineSlice
+    mine: mineSlice,
+    game: gameSlice
 })
 
 const store = configureStore({

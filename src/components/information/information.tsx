@@ -3,12 +3,12 @@ import {useAppDispatch, useAppSelector} from '../../hook';
 import Smile from '../smile/smile';
 import Counter from '../counter/counter';
 import './information.scss';
-import {updateTimer} from '../../store/slices/mineSlice';
 import {GameStatuses} from '../../models/models';
+import {updateTimer} from '../../store/slices/gameSlice';
 
 const Information: React.FC = () => {
-    const gameStatus = useAppSelector(state => state.mine.gameStatus);
-    const timer = useAppSelector(state => state.mine.timer);
+    const gameStatus = useAppSelector(state => state.game.gameStatus);
+    const timer = useAppSelector(state => state.game.timer);
     const count = useAppSelector(state => state.mine.count);
     const [displayTimer, setDisplayTimer] = useState<number>(timer);
 
