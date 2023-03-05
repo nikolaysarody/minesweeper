@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {v4} from 'uuid';
 import './gameField.scss';
 import Tile from './tile/tile';
@@ -13,6 +13,8 @@ const GameField: React.FC = () => {
     const questionCoordinates = useAppSelector(state => state.mine.questionCoordinates);
     const gameStatus = useAppSelector(state => state.game.gameStatus);
     const [tileArr, setTileArr] = useState<ITile[][]>([]);
+    const [newRender, setNewRender] = useState<boolean>(false);
+    const [ignoreCoordinates, setIgnoreCoordinates] = useState<number[]>([]);
     const dispatch = useAppDispatch();
 
     const compareTwoArray = (a1: number[], a2: number[] = []) => {
@@ -45,55 +47,54 @@ const GameField: React.FC = () => {
                 return TileStatuses.TileSeven;
             case 8:
                 return TileStatuses.TileEight;
-            default: {
+            default:
                 return TileStatuses.TileVoid;
-            }
         }
     }
 
     const waveGenerator = (coordinates: number[]) => {
         const newArr = tileArr.slice();
-        newArr.forEach((array, arrayIndex) => {
-            array.forEach((item, itemIndex) => {
-                if (arrayIndex === coordinates[0] && itemIndex === coordinates[1]) {
+        newArr.forEach((array, i) => {
+            array.forEach((item, j) => {
+                if (i === coordinates[0] && j === coordinates[1]) {
                     item.status = checkNeighbours(item.neighbours, coordinates);
                     item.borderTile = true;
                     item.renderCount = item.renderCount ? item.renderCount + 1 : 1;
                     if (item.status === TileStatuses.TileVoid) {
-                        if (itemIndex > 0) {
-                            array[itemIndex - 1].borderTile = true;
-                            array[itemIndex - 1].status = checkNeighbours(array[itemIndex - 1].neighbours);
+                        if (j > 0) {
+                            array[j - 1].borderTile = true;
+                            array[j - 1].status = checkNeighbours(array[j - 1].neighbours);
                         }
-                        if (newArr[arrayIndex - 1]) {
-                            if (newArr[arrayIndex - 1][itemIndex]) {
-                                newArr[arrayIndex - 1][itemIndex].borderTile = true;
-                                newArr[arrayIndex - 1][itemIndex].status = checkNeighbours(newArr[arrayIndex - 1][itemIndex].neighbours);
+                        if (newArr[i - 1]) {
+                            if (newArr[i - 1][j]) {
+                                newArr[i - 1][j].borderTile = true;
+                                newArr[i - 1][j].status = checkNeighbours(newArr[i - 1][j].neighbours);
                             }
-                            if (newArr[arrayIndex - 1][itemIndex - 1]) {
-                                newArr[arrayIndex - 1][itemIndex - 1].borderTile = true;
-                                newArr[arrayIndex - 1][itemIndex - 1].status = checkNeighbours(newArr[arrayIndex - 1][itemIndex - 1].neighbours);
+                            if (newArr[i - 1][j - 1]) {
+                                newArr[i - 1][j - 1].borderTile = true;
+                                newArr[i - 1][j - 1].status = checkNeighbours(newArr[i - 1][j - 1].neighbours);
                             }
-                            if (newArr[arrayIndex - 1][itemIndex + 1]) {
-                                newArr[arrayIndex - 1][itemIndex + 1].borderTile = true;
-                                newArr[arrayIndex - 1][itemIndex + 1].status = checkNeighbours(newArr[arrayIndex - 1][itemIndex + 1].neighbours);
+                            if (newArr[i - 1][j + 1]) {
+                                newArr[i - 1][j + 1].borderTile = true;
+                                newArr[i - 1][j + 1].status = checkNeighbours(newArr[i - 1][j + 1].neighbours);
                             }
                         }
-                        if (newArr[arrayIndex] && newArr[arrayIndex][itemIndex + 1]) {
-                            array[itemIndex + 1].borderTile = true;
-                            array[itemIndex + 1].status = checkNeighbours(array[itemIndex + 1].neighbours);
+                        if (newArr[i] && newArr[i][j + 1]) {
+                            array[j + 1].borderTile = true;
+                            array[j + 1].status = checkNeighbours(array[j + 1].neighbours);
                         }
-                        if (newArr[arrayIndex + 1]) {
-                            if (newArr[arrayIndex + 1][itemIndex]) {
-                                newArr[arrayIndex + 1][itemIndex].borderTile = true;
-                                newArr[arrayIndex + 1][itemIndex].status = checkNeighbours(newArr[arrayIndex + 1][itemIndex].neighbours);
+                        if (newArr[i + 1]) {
+                            if (newArr[i + 1][j]) {
+                                newArr[i + 1][j].borderTile = true;
+                                newArr[i + 1][j].status = checkNeighbours(newArr[i + 1][j].neighbours);
                             }
-                            if (newArr[arrayIndex + 1][itemIndex - 1]) {
-                                newArr[arrayIndex + 1][itemIndex - 1].borderTile = true;
-                                newArr[arrayIndex + 1][itemIndex - 1].status = checkNeighbours(newArr[arrayIndex + 1][itemIndex - 1].neighbours);
+                            if (newArr[i + 1][j - 1]) {
+                                newArr[i + 1][j - 1].borderTile = true;
+                                newArr[i + 1][j - 1].status = checkNeighbours(newArr[i + 1][j - 1].neighbours);
                             }
-                            if (newArr[arrayIndex + 1][itemIndex + 1]) {
-                                newArr[arrayIndex + 1][itemIndex + 1].borderTile = true;
-                                newArr[arrayIndex + 1][itemIndex + 1].status = checkNeighbours(newArr[arrayIndex + 1][itemIndex + 1].neighbours);
+                            if (newArr[i + 1][j + 1]) {
+                                newArr[i + 1][j + 1].borderTile = true;
+                                newArr[i + 1][j + 1].status = checkNeighbours(newArr[i + 1][j + 1].neighbours);
                             }
                         }
                     }
@@ -105,10 +106,8 @@ const GameField: React.FC = () => {
 
     const generateMineField = (ignore?: number[]) => {
         let count = 0;
-        let cycleCount = 0;
         const arrColumns: ITile[][] = [];
         while (count < 40) {
-            cycleCount = cycleCount + 1;
             for (let i = 0; i < 16; i++) {
                 const arrRows: ITile[] = [];
                 for (let j = 0; j < 16; j++) {
@@ -160,49 +159,52 @@ const GameField: React.FC = () => {
                 arrColumns[i] = arrRows;
             }
         }
-        arrColumns.forEach((array, arrayIndex) => {
-            array.forEach((item, itemIndex) => {
+        arrColumns.forEach((array, i) => {
+            array.forEach((item, j) => {
                 if (item.status === TileStatuses.TileMine) {
                     item.neighbours = 0;
-                    if (itemIndex > 0) {
-                        array[itemIndex - 1].neighbours = array[itemIndex - 1].neighbours + 1;
+                    if (j > 0) {
+                        array[j - 1].neighbours = array[j - 1].neighbours + 1;
                     }
-                    if (arrColumns[arrayIndex - 1]) {
-                        if (arrColumns[arrayIndex - 1][itemIndex] && !arrColumns[arrayIndex - 1][itemIndex].renderCount) {
-                            arrColumns[arrayIndex - 1][itemIndex].neighbours = arrColumns[arrayIndex - 1][itemIndex].neighbours + 1;
+                    if (arrColumns[i - 1]) {
+                        if (arrColumns[i - 1][j] && !arrColumns[i - 1][j].renderCount) {
+                            arrColumns[i - 1][j].neighbours = arrColumns[i - 1][j].neighbours + 1;
                         }
-                        if (arrColumns[arrayIndex - 1][itemIndex - 1] && !arrColumns[arrayIndex - 1][itemIndex - 1].renderCount) {
-                            arrColumns[arrayIndex - 1][itemIndex - 1].neighbours = arrColumns[arrayIndex - 1][itemIndex - 1].neighbours + 1;
+                        if (arrColumns[i - 1][j - 1] && !arrColumns[i - 1][j - 1].renderCount) {
+                            arrColumns[i - 1][j - 1].neighbours = arrColumns[i - 1][j - 1].neighbours + 1;
                         }
-                        if (arrColumns[arrayIndex - 1][itemIndex + 1] && !arrColumns[arrayIndex - 1][itemIndex + 1].renderCount) {
-                            arrColumns[arrayIndex - 1][itemIndex + 1].neighbours = arrColumns[arrayIndex - 1][itemIndex + 1].neighbours + 1;
+                        if (arrColumns[i - 1][j + 1] && !arrColumns[i - 1][j + 1].renderCount) {
+                            arrColumns[i - 1][j + 1].neighbours = arrColumns[i - 1][j + 1].neighbours + 1;
                         }
                     }
-                    if (arrColumns[arrayIndex] && arrColumns[arrayIndex][itemIndex + 1] && !arrColumns[arrayIndex][itemIndex + 1].renderCount) {
-                        array[itemIndex + 1].neighbours = array[itemIndex + 1].neighbours + 1;
+                    if (arrColumns[i] && arrColumns[i][j + 1] && !arrColumns[i][j + 1].renderCount) {
+                        array[j + 1].neighbours = array[j + 1].neighbours + 1;
                     }
-                    if (arrColumns[arrayIndex + 1]) {
-                        if (arrColumns[arrayIndex + 1][itemIndex] && !arrColumns[arrayIndex + 1][itemIndex].renderCount) {
-                            arrColumns[arrayIndex + 1][itemIndex].neighbours = arrColumns[arrayIndex + 1][itemIndex].neighbours + 1;
+                    if (arrColumns[i + 1]) {
+                        if (arrColumns[i + 1][j] && !arrColumns[i + 1][j].renderCount) {
+                            arrColumns[i + 1][j].neighbours = arrColumns[i + 1][j].neighbours + 1;
                         }
-                        if (arrColumns[arrayIndex + 1][itemIndex - 1] && !arrColumns[arrayIndex + 1][itemIndex - 1].renderCount) {
-                            arrColumns[arrayIndex + 1][itemIndex - 1].neighbours = arrColumns[arrayIndex + 1][itemIndex - 1].neighbours + 1;
+                        if (arrColumns[i + 1][j - 1] && !arrColumns[i + 1][j - 1].renderCount) {
+                            arrColumns[i + 1][j - 1].neighbours = arrColumns[i + 1][j - 1].neighbours + 1;
                         }
-                        if (arrColumns[arrayIndex + 1][itemIndex + 1] && !arrColumns[arrayIndex + 1][itemIndex + 1].renderCount) {
-                            arrColumns[arrayIndex + 1][itemIndex + 1].neighbours = arrColumns[arrayIndex + 1][itemIndex + 1].neighbours + 1;
+                        if (arrColumns[i + 1][j + 1] && !arrColumns[i + 1][j + 1].renderCount) {
+                            arrColumns[i + 1][j + 1].neighbours = arrColumns[i + 1][j + 1].neighbours + 1;
                         }
                     }
                 }
             });
         });
-        setTileArr(arrColumns);
+        return arrColumns;
     }
+
+    const generatedMineField = useMemo(() => generateMineField(ignoreCoordinates), [newRender]);
 
     useEffect(() => {
         if (gameStatus === GameStatuses.Restart) {
             dispatch(updateGameStatus(GameStatuses.Idle));
             dispatch(updateSmileStatus(SmileStatuses.Smile));
-            generateMineField();
+            setIgnoreCoordinates([]);
+            setNewRender(prevState => !prevState);
         }
         if (gameStatus === GameStatuses.Win) {
             dispatch(updateSmileStatus(SmileStatuses.Cool));
@@ -216,8 +218,8 @@ const GameField: React.FC = () => {
     }, [tileCount]);
 
     useEffect(() => {
-        generateMineField();
-    }, []);
+        setTileArr(generatedMineField);
+    }, [generatedMineField]);
 
     return (
         <div className="app__content-down">
@@ -226,7 +228,10 @@ const GameField: React.FC = () => {
                     return (
                         <Tile status={item.status}
                               neighbours={item.neighbours} key={v4()}
-                              generator={generateMineField}
+                              generator={(coordinates) => {
+                                  setIgnoreCoordinates(coordinates);
+                                  setNewRender(prevState => !prevState);
+                              }}
                               tileCoordinates={item.tileCoordinates}
                               pressedTile={item.pressedTile}
                               borderTile={item.borderTile}

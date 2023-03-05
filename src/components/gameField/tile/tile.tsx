@@ -32,16 +32,12 @@ const Tile: React.FC<ITileItem> = ({
             return status;
         } else if (flagCoordinates.includes(tileCoordinates) || flag) {
             return TileStatuses.TileFlag;
-        }else if (questionCoordinates.includes(tileCoordinates) || question) {
+        } else if (questionCoordinates.includes(tileCoordinates) || question) {
             return TileStatuses.TileQuestion;
         } else {
             return TileStatuses.TileDefault;
         }
     });
-
-    // else if (status === TileStatuses.TileMine) {
-    //     return TileStatuses.TileMine;
-    // }
 
     const tileContainer = useRef<HTMLDivElement>(null);
 
@@ -67,9 +63,8 @@ const Tile: React.FC<ITileItem> = ({
                     return TileStatuses.TileSeven;
                 case 8:
                     return TileStatuses.TileEight;
-                default: {
+                default:
                     return TileStatuses.TileVoid;
-                }
             }
         });
     }
