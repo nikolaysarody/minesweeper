@@ -1,7 +1,5 @@
 import React from 'react';
 import './App.scss';
-// import Counter from './components/counter/counter';
-// import Smile from './components/smile/smile';
 import Information from './components/information/information';
 import GameField from './components/gameField/gameField';
 

@@ -1,8 +1,18 @@
 @mixin sides {
   display: flex;
-  height: 71.875%;
-  width: 15.234375%;
+  height: 46px;
+  width: 77px;
   margin: 10px 0 10px 0;
+
+  @media (max-width: 450px) {
+    height: 30px;
+    width: 52px;
+  }
+
+  @media (max-width: 300px) {
+    height: 23px;
+    width: 39px;
+  }
 }
 
 .app {
