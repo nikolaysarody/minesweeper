@@ -54,16 +54,19 @@ const GameField: React.FC = () => {
 
     const waveGenerator = (coordinates: number[]) => {
         const newArr = tileArr.slice();
-        newArr.forEach((array, i) => {
-            array.forEach((item, j) => {
+        let status = false;
+        for (let i = 0; i < 16; i++) {
+            for (let j = 0; j < 16; j++) {
                 if (i === coordinates[0] && j === coordinates[1]) {
-                    item.status = checkNeighbours(item.neighbours, coordinates);
+                    status = true;
+                    const item = newArr[i][j];
+                    item.status = checkNeighbours(newArr[i][j].neighbours, coordinates);
                     item.borderTile = true;
                     item.renderCount = item.renderCount ? item.renderCount + 1 : 1;
                     if (item.status === TileStatuses.TileVoid) {
                         if (j > 0) {
-                            array[j - 1].borderTile = true;
-                            array[j - 1].status = checkNeighbours(array[j - 1].neighbours);
+                            newArr[i][j - 1].borderTile = true;
+                            newArr[i][j - 1].status = checkNeighbours(newArr[i][j - 1].neighbours);
                         }
                         if (newArr[i - 1]) {
                             if (newArr[i - 1][j]) {
@@ -80,8 +83,8 @@ const GameField: React.FC = () => {
                             }
                         }
                         if (newArr[i] && newArr[i][j + 1]) {
-                            array[j + 1].borderTile = true;
-                            array[j + 1].status = checkNeighbours(array[j + 1].neighbours);
+                            newArr[i][j + 1].borderTile = true;
+                            newArr[i][j + 1].status = checkNeighbours(newArr[i][j + 1].neighbours);
                         }
                         if (newArr[i + 1]) {
                             if (newArr[i + 1][j]) {
@@ -98,9 +101,13 @@ const GameField: React.FC = () => {
                             }
                         }
                     }
+                    break;
                 }
-            });
-        });
+                if (status) {
+                    break;
+                }
+            }
+        }
         setTileArr(newArr);
     }
 

@@ -9,7 +9,7 @@ import {
     removeQuestionMinesCoordinates,
     updateExplodedMineCoordinates
 } from '../../../store/slices/mineSlice';
-import {updateTileCount, updateGameStatus, updateSmileStatus} from '../../../store/slices/gameSlice';
+import {updateGameStatus, updateSmileStatus, updateTileCount} from '../../../store/slices/gameSlice';
 
 const Tile: React.FC<ITileItem> = ({
                                        status,
@@ -38,7 +38,6 @@ const Tile: React.FC<ITileItem> = ({
             return TileStatuses.TileDefault;
         }
     });
-
     const tileContainer = useRef<HTMLDivElement>(null);
 
     const dispatch = useAppDispatch();
@@ -70,7 +69,7 @@ const Tile: React.FC<ITileItem> = ({
     }
 
     const checkTileStatus = () => {
-        if (status !== TileStatuses.TileMine) {
+        if (status !== TileStatuses.TileMine && tileStatus) {
             dispatch(updateGameStatus(GameStatuses.Begin));
             if (renderCount && neighbours) {
                 checkNeighbours();
@@ -134,7 +133,7 @@ const Tile: React.FC<ITileItem> = ({
     return (
         <div className="app__content-down-tile"
              onClick={() => {
-                 if (gameStatus !== GameStatuses.End && gameStatus !== GameStatuses.Win) {
+                 if (gameStatus !== GameStatuses.End && gameStatus !== GameStatuses.Win && tileStatus !== TileStatuses.TileQuestion && tileStatus !== TileStatuses.TileFlag) {
                      checkTileStatus();
                  }
              }}
