@@ -5,12 +5,14 @@ interface GameState {
     timer: number;
     gameStatus: GameStatuses;
     smileStatus: SmileStatuses;
+    tileCount: number
 }
 
 const initialState: GameState = {
     timer: 0,
     gameStatus: GameStatuses.Idle,
-    smileStatus: SmileStatuses.Smile
+    smileStatus: SmileStatuses.Smile,
+    tileCount: 0
 }
 
 const gameSlice = createSlice({
@@ -25,10 +27,16 @@ const gameSlice = createSlice({
         },
         updateSmileStatus(state, action: PayloadAction<SmileStatuses>) {
             state.smileStatus = action.payload;
+        },
+        updateTileCount(state){
+            state.tileCount = state.tileCount + 1;
+        },
+        deleteTileCount(state){
+            state.tileCount = 0;
         }
     }
 });
 
-export const {updateTimer, updateGameStatus, updateSmileStatus} = gameSlice.actions;
+export const {updateTimer, updateGameStatus, updateSmileStatus, updateTileCount, deleteTileCount} = gameSlice.actions;
 
 export default gameSlice.reducer;

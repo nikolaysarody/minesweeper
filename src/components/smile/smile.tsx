@@ -3,7 +3,7 @@ import {useAppDispatch, useAppSelector} from '../../hook';
 import {GameStatuses, SmileStatuses} from '../../models/models';
 import './smile.scss';
 import {deleteFlagMinesCoordinates, deleteQuestionMinesCoordinates} from '../../store/slices/mineSlice';
-import {updateGameStatus} from '../../store/slices/gameSlice';
+import {deleteTileCount, updateGameStatus} from '../../store/slices/gameSlice';
 
 
 const Smile: React.FC = () => {
@@ -29,6 +29,7 @@ const Smile: React.FC = () => {
                  dispatch(updateGameStatus(GameStatuses.Restart));
                  dispatch(deleteFlagMinesCoordinates());
                  dispatch(deleteQuestionMinesCoordinates());
+                 dispatch(deleteTileCount());
              }}
              onMouseDown={() => smileStatus === SmileStatuses.Smile ? setDisplay(SmileStatuses.PressedSmile) : null}
              onMouseUp={() => setDisplay(smileStatus)}

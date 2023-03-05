@@ -9,7 +9,7 @@ import {
     removeQuestionMinesCoordinates,
     updateExplodedMineCoordinates
 } from '../../../store/slices/mineSlice';
-import {updateGameStatus, updateSmileStatus} from '../../../store/slices/gameSlice';
+import {updateTileCount, updateGameStatus, updateSmileStatus} from '../../../store/slices/gameSlice';
 
 const Tile: React.FC<ITileItem> = ({
                                        status,
@@ -32,17 +32,23 @@ const Tile: React.FC<ITileItem> = ({
             return status;
         } else if (flagCoordinates.includes(tileCoordinates) || flag) {
             return TileStatuses.TileFlag;
-        } else if (questionCoordinates.includes(tileCoordinates) || question) {
+        }else if (questionCoordinates.includes(tileCoordinates) || question) {
             return TileStatuses.TileQuestion;
         } else {
             return TileStatuses.TileDefault;
         }
     });
+
+    // else if (status === TileStatuses.TileMine) {
+    //     return TileStatuses.TileMine;
+    // }
+
     const tileContainer = useRef<HTMLDivElement>(null);
 
     const dispatch = useAppDispatch();
 
     const checkNeighbours = () => {
+        dispatch(updateTileCount());
         setTileStatus(() => {
             switch (neighbours) {
                 case 1:
@@ -73,8 +79,9 @@ const Tile: React.FC<ITileItem> = ({
             dispatch(updateGameStatus(GameStatuses.Begin));
             if (renderCount && neighbours) {
                 checkNeighbours();
-            } else {
-                waveGenerator(tileCoordinates, tileStatus);
+            } else if (tileStatus === TileStatuses.TileDefault) {
+                waveGenerator(tileCoordinates, TileStatuses.TileDefault);
+                checkNeighbours();
             }
         } else if (gameStatus !== GameStatuses.Begin) {
             generator(tileCoordinates);
@@ -100,7 +107,7 @@ const Tile: React.FC<ITileItem> = ({
             if (status === TileStatuses.TileMine) {
                 if (explodedTile !== tileCoordinates) {
                     if (!flagCoordinates.includes(tileCoordinates)) {
-                        setTileStatus(status);
+                        setTileStatus(TileStatuses.TileMine);
                     }
                 } else {
                     setTileStatus(TileStatuses.TileMineExploded);
@@ -113,20 +120,18 @@ const Tile: React.FC<ITileItem> = ({
 
     useEffect(() => {
         if (borderTile) {
-            if (renderCount < 1) {
+            if (renderCount < 1 && !pressedTile) {
                 waveGenerator(tileCoordinates, tileStatus);
+                checkNeighbours();
             }
-            checkNeighbours();
         }
         if (pressedTile && gameStatus !== GameStatuses.End && renderCount === 0) {
             if (gameStatus !== GameStatuses.Begin) {
                 dispatch(updateGameStatus(GameStatuses.Begin));
             }
             if (status !== TileStatuses.TileMine) {
-                if (renderCount < 1) {
-                    waveGenerator(tileCoordinates, tileStatus);
-                    checkNeighbours();
-                }
+                waveGenerator(tileCoordinates, tileStatus);
+                checkNeighbours();
             }
         }
     }, []);
@@ -156,8 +161,22 @@ const Tile: React.FC<ITileItem> = ({
                  }
              }}
              ref={tileContainer}
-             onMouseDown={() => gameStatus !== GameStatuses.End ? dispatch(updateSmileStatus(SmileStatuses.Scary)) : null}
-             onMouseUp={() => gameStatus !== GameStatuses.End ? dispatch(updateSmileStatus(SmileStatuses.Smile)) : null}>
+             onMouseDown={() => {
+                 if (gameStatus !== GameStatuses.End && gameStatus !== GameStatuses.Win) {
+                     dispatch(updateSmileStatus(SmileStatuses.Scary));
+                 }
+                 if (questionCoordinates.includes(tileCoordinates)) {
+                     setTileStatus(TileStatuses.TileQuestionPressed);
+                 }
+             }}
+             onMouseUp={() => {
+                 if (gameStatus !== GameStatuses.End && gameStatus !== GameStatuses.Win) {
+                     dispatch(updateSmileStatus(SmileStatuses.Smile));
+                 }
+                 if (questionCoordinates.includes(tileCoordinates)) {
+                     setTileStatus(TileStatuses.TileDefault);
+                 }
+             }}>
             <img src={tileStatus} alt=""/>
         </div>
     );

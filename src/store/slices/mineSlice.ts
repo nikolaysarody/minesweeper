@@ -5,7 +5,6 @@ interface MineState {
     explodedMineCoordinates: number[],
     flagCoordinates: number[][],
     questionCoordinates: number[][],
-    mineCoordinates: number[][],
 }
 
 const initialState: MineState = {
@@ -13,7 +12,6 @@ const initialState: MineState = {
     explodedMineCoordinates: [],
     flagCoordinates: [],
     questionCoordinates: [],
-    mineCoordinates: []
 }
 
 const mineSlice = createSlice({
@@ -51,13 +49,7 @@ const mineSlice = createSlice({
         },
         deleteQuestionMinesCoordinates(state) {
             state.questionCoordinates = [];
-        },
-        updateMineCoordinates(state, action: PayloadAction<number[]>) {
-            state.mineCoordinates.push(action.payload);
-        },
-        deleteMineCoordinates(state) {
-            state.mineCoordinates = [];
-        },
+        }
     },
 });
 
@@ -69,8 +61,6 @@ export const {
     addQuestionMinesCoordinates,
     removeQuestionMinesCoordinates,
     deleteQuestionMinesCoordinates,
-    updateMineCoordinates,
-    deleteMineCoordinates
 } = mineSlice.actions;
 
 export default mineSlice.reducer;

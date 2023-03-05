@@ -4,18 +4,13 @@ import './gameField.scss';
 import Tile from './tile/tile';
 import {GameStatuses, ITile, SmileStatuses, TileStatuses} from '../../models/models';
 import {useAppDispatch, useAppSelector} from '../../hook';
-import {
-    deleteMineCoordinates,
-    removeFlagMinesCoordinates,
-    updateMineCoordinates,
-} from '../../store/slices/mineSlice';
+import {removeFlagMinesCoordinates} from '../../store/slices/mineSlice';
 import {updateGameStatus, updateSmileStatus} from '../../store/slices/gameSlice';
 
 const GameField: React.FC = () => {
-    const mineCount = useAppSelector(state => state.mine.count);
+    const tileCount = useAppSelector(state => state.game.tileCount);
     const flagCoordinates = useAppSelector(state => state.mine.flagCoordinates);
     const questionCoordinates = useAppSelector(state => state.mine.questionCoordinates);
-    const mineCoordinates = useAppSelector(state => state.mine.mineCoordinates);
     const gameStatus = useAppSelector(state => state.game.gameStatus);
     const [tileArr, setTileArr] = useState<ITile[][]>([]);
     const dispatch = useAppDispatch();
@@ -27,17 +22,6 @@ const GameField: React.FC = () => {
         return matrix.some((array) => {
             return arr.toString() === array.toString();
         });
-    }
-    const compareTwoMatrixArray = (matrix1: number[][], matrix2: number[][]) => {
-        let count = 0;
-        matrix1.forEach((item1) => {
-            if (matrix2.some((item2) => {
-                return compareTwoArray(item1, item2);
-            })) {
-                count = count + 1;
-            }
-        });
-        return count;
     }
 
     const checkNeighbours = (neighbours: number, coordinates?: number[]): TileStatuses => {
@@ -120,7 +104,6 @@ const GameField: React.FC = () => {
     }
 
     const generateMineField = (ignore?: number[]) => {
-        dispatch(deleteMineCoordinates());
         let count = 0;
         let cycleCount = 0;
         const arrColumns: ITile[][] = [];
@@ -140,10 +123,8 @@ const GameField: React.FC = () => {
                         }
                         if (!arrColumns[i]) {
                             count++;
-                            dispatch(updateMineCoordinates([i, j]));
                         } else if (arrColumns[i][j] && arrColumns[i][j].status !== TileStatuses.TileMine) {
                             count++;
-                            dispatch(updateMineCoordinates([i, j]));
                         }
                     } else {
                         if (!arrColumns[i]) {
@@ -187,27 +168,27 @@ const GameField: React.FC = () => {
                         array[itemIndex - 1].neighbours = array[itemIndex - 1].neighbours + 1;
                     }
                     if (arrColumns[arrayIndex - 1]) {
-                        if (arrColumns[arrayIndex - 1][itemIndex]) {
+                        if (arrColumns[arrayIndex - 1][itemIndex] && !arrColumns[arrayIndex - 1][itemIndex].renderCount) {
                             arrColumns[arrayIndex - 1][itemIndex].neighbours = arrColumns[arrayIndex - 1][itemIndex].neighbours + 1;
                         }
-                        if (arrColumns[arrayIndex - 1][itemIndex - 1]) {
+                        if (arrColumns[arrayIndex - 1][itemIndex - 1] && !arrColumns[arrayIndex - 1][itemIndex - 1].renderCount) {
                             arrColumns[arrayIndex - 1][itemIndex - 1].neighbours = arrColumns[arrayIndex - 1][itemIndex - 1].neighbours + 1;
                         }
-                        if (arrColumns[arrayIndex - 1][itemIndex + 1]) {
+                        if (arrColumns[arrayIndex - 1][itemIndex + 1] && !arrColumns[arrayIndex - 1][itemIndex + 1].renderCount) {
                             arrColumns[arrayIndex - 1][itemIndex + 1].neighbours = arrColumns[arrayIndex - 1][itemIndex + 1].neighbours + 1;
                         }
                     }
-                    if (arrColumns[arrayIndex] && arrColumns[arrayIndex][itemIndex + 1]) {
+                    if (arrColumns[arrayIndex] && arrColumns[arrayIndex][itemIndex + 1] && !arrColumns[arrayIndex][itemIndex + 1].renderCount) {
                         array[itemIndex + 1].neighbours = array[itemIndex + 1].neighbours + 1;
                     }
                     if (arrColumns[arrayIndex + 1]) {
-                        if (arrColumns[arrayIndex + 1][itemIndex]) {
+                        if (arrColumns[arrayIndex + 1][itemIndex] && !arrColumns[arrayIndex + 1][itemIndex].renderCount) {
                             arrColumns[arrayIndex + 1][itemIndex].neighbours = arrColumns[arrayIndex + 1][itemIndex].neighbours + 1;
                         }
-                        if (arrColumns[arrayIndex + 1][itemIndex - 1]) {
+                        if (arrColumns[arrayIndex + 1][itemIndex - 1] && !arrColumns[arrayIndex + 1][itemIndex - 1].renderCount) {
                             arrColumns[arrayIndex + 1][itemIndex - 1].neighbours = arrColumns[arrayIndex + 1][itemIndex - 1].neighbours + 1;
                         }
-                        if (arrColumns[arrayIndex + 1][itemIndex + 1]) {
+                        if (arrColumns[arrayIndex + 1][itemIndex + 1] && !arrColumns[arrayIndex + 1][itemIndex + 1].renderCount) {
                             arrColumns[arrayIndex + 1][itemIndex + 1].neighbours = arrColumns[arrayIndex + 1][itemIndex + 1].neighbours + 1;
                         }
                     }
@@ -229,10 +210,10 @@ const GameField: React.FC = () => {
     }, [gameStatus]);
 
     useEffect(() => {
-        if (compareTwoMatrixArray(mineCoordinates, flagCoordinates) === mineCoordinates.length && mineCount === 0) {
+        if (tileCount === 216) {
             dispatch(updateGameStatus(GameStatuses.Win));
         }
-    }, [mineCount]);
+    }, [tileCount]);
 
     useEffect(() => {
         generateMineField();
