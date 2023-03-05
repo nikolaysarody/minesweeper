@@ -24,8 +24,7 @@ body {
 
   &__wrapper {
     &-outside {
-      width: 550px;
-      //height: 636px;
+      max-width: 550px;
       border: 4px outset white;
     }
 
