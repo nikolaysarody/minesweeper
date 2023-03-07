@@ -54,57 +54,47 @@ const GameField: React.FC = () => {
 
     const waveGenerator = (coordinates: number[]) => {
         const newArr = tileArr.slice();
-        let status = false;
-        for (let i = 0; i < 16; i++) {
-            for (let j = 0; j < 16; j++) {
-                if (i === coordinates[0] && j === coordinates[1]) {
-                    status = true;
-                    const item = newArr[i][j];
-                    item.status = checkNeighbours(newArr[i][j].neighbours, coordinates);
-                    item.borderTile = true;
-                    item.renderCount = item.renderCount ? item.renderCount + 1 : 1;
-                    if (item.status === TileStatuses.TileVoid) {
-                        if (j > 0) {
-                            newArr[i][j - 1].borderTile = true;
-                            newArr[i][j - 1].status = checkNeighbours(newArr[i][j - 1].neighbours);
-                        }
-                        if (newArr[i - 1]) {
-                            if (newArr[i - 1][j]) {
-                                newArr[i - 1][j].borderTile = true;
-                                newArr[i - 1][j].status = checkNeighbours(newArr[i - 1][j].neighbours);
-                            }
-                            if (newArr[i - 1][j - 1]) {
-                                newArr[i - 1][j - 1].borderTile = true;
-                                newArr[i - 1][j - 1].status = checkNeighbours(newArr[i - 1][j - 1].neighbours);
-                            }
-                            if (newArr[i - 1][j + 1]) {
-                                newArr[i - 1][j + 1].borderTile = true;
-                                newArr[i - 1][j + 1].status = checkNeighbours(newArr[i - 1][j + 1].neighbours);
-                            }
-                        }
-                        if (newArr[i] && newArr[i][j + 1]) {
-                            newArr[i][j + 1].borderTile = true;
-                            newArr[i][j + 1].status = checkNeighbours(newArr[i][j + 1].neighbours);
-                        }
-                        if (newArr[i + 1]) {
-                            if (newArr[i + 1][j]) {
-                                newArr[i + 1][j].borderTile = true;
-                                newArr[i + 1][j].status = checkNeighbours(newArr[i + 1][j].neighbours);
-                            }
-                            if (newArr[i + 1][j - 1]) {
-                                newArr[i + 1][j - 1].borderTile = true;
-                                newArr[i + 1][j - 1].status = checkNeighbours(newArr[i + 1][j - 1].neighbours);
-                            }
-                            if (newArr[i + 1][j + 1]) {
-                                newArr[i + 1][j + 1].borderTile = true;
-                                newArr[i + 1][j + 1].status = checkNeighbours(newArr[i + 1][j + 1].neighbours);
-                            }
-                        }
-                    }
-                    break;
+        let i = coordinates[0];
+        let j = coordinates[1];
+        const item = newArr[i][j];
+        item.status = checkNeighbours(newArr[i][j].neighbours, coordinates);
+        item.borderTile = true;
+        item.renderCount = item.renderCount ? item.renderCount + 1 : 1;
+        if (item.status === TileStatuses.TileVoid) {
+            if (j > 0) {
+                newArr[i][j - 1].borderTile = true;
+                newArr[i][j - 1].status = checkNeighbours(newArr[i][j - 1].neighbours);
+            }
+            if (newArr[i - 1]) {
+                if (newArr[i - 1][j]) {
+                    newArr[i - 1][j].borderTile = true;
+                    newArr[i - 1][j].status = checkNeighbours(newArr[i - 1][j].neighbours);
                 }
-                if (status) {
-                    break;
+                if (newArr[i - 1][j - 1]) {
+                    newArr[i - 1][j - 1].borderTile = true;
+                    newArr[i - 1][j - 1].status = checkNeighbours(newArr[i - 1][j - 1].neighbours);
+                }
+                if (newArr[i - 1][j + 1]) {
+                    newArr[i - 1][j + 1].borderTile = true;
+                    newArr[i - 1][j + 1].status = checkNeighbours(newArr[i - 1][j + 1].neighbours);
+                }
+            }
+            if (newArr[i] && newArr[i][j + 1]) {
+                newArr[i][j + 1].borderTile = true;
+                newArr[i][j + 1].status = checkNeighbours(newArr[i][j + 1].neighbours);
+            }
+            if (newArr[i + 1]) {
+                if (newArr[i + 1][j]) {
+                    newArr[i + 1][j].borderTile = true;
+                    newArr[i + 1][j].status = checkNeighbours(newArr[i + 1][j].neighbours);
+                }
+                if (newArr[i + 1][j - 1]) {
+                    newArr[i + 1][j - 1].borderTile = true;
+                    newArr[i + 1][j - 1].status = checkNeighbours(newArr[i + 1][j - 1].neighbours);
+                }
+                if (newArr[i + 1][j + 1]) {
+                    newArr[i + 1][j + 1].borderTile = true;
+                    newArr[i + 1][j + 1].status = checkNeighbours(newArr[i + 1][j + 1].neighbours);
                 }
             }
         }
