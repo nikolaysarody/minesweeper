@@ -1,9 +1,9 @@
 export enum SmileStatuses {
-    Smile = '/img/smile/default.png',
-    PressedSmile = '/img/smile/default-pressed.png',
-    Cool = '/img/smile/cool.png',
-    Dead = '/img/smile/dead.png',
-    Scary = '/img/smile/scary.png'
+    Smile = '/minesweeper/img/smile/default.png',
+    PressedSmile = '/minesweeper/img/smile/default-pressed.png',
+    Cool = '/minesweeper/img/smile/cool.png',
+    Dead = '/minesweeper/img/smile/dead.png',
+    Scary = '/minesweeper/img/smile/scary.png'
 }
 
 export enum GameStatuses {
@@ -15,35 +15,35 @@ export enum GameStatuses {
 }
 
 export enum TileStatuses {
-    TileDefault = '/img/tile/default.png',
-    TileOne = '/img/tile/one.png',
-    TileTwo = '/img/tile/two.png',
-    TileThree = '/img/tile/three.png',
-    TileFour = '/img/tile/four.png',
-    TileFive = '/img/tile/five.png',
-    TileSix = '/img/tile/six.png',
-    TileSeven = '/img/tile/seven.png',
-    TileEight = '/img/tile/eight.png',
-    TileVoid = '/img/tile/void.png',
-    TileMine = '/img/tile/mine.png',
-    TileMineExploded = '/img/tile/mine-exploded.png',
-    TileMineWrong = '/img/tile/mine-wrong.png',
-    TileQuestion = '/img/tile/question.png',
-    TileQuestionPressed = '/img/tile/question-pressed.png',
-    TileFlag = '/img/tile/flag.png',
+    TileDefault = '/minesweeper/img/tile/default.png',
+    TileOne = '/minesweeper/img/tile/one.png',
+    TileTwo = '/minesweeper/img/tile/two.png',
+    TileThree = '/minesweeper/img/tile/three.png',
+    TileFour = '/minesweeper/img/tile/four.png',
+    TileFive = '/minesweeper/img/tile/five.png',
+    TileSix = '/minesweeper/img/tile/six.png',
+    TileSeven = '/minesweeper/img/tile/seven.png',
+    TileEight = '/minesweeper/img/tile/eight.png',
+    TileVoid = '/minesweeper/img/tile/void.png',
+    TileMine = '/minesweeper/img/tile/mine.png',
+    TileMineExploded = '/minesweeper/img/tile/mine-exploded.png',
+    TileMineWrong = '/minesweeper/img/tile/mine-wrong.png',
+    TileQuestion = '/minesweeper/img/tile/question.png',
+    TileQuestionPressed = '/minesweeper/img/tile/question-pressed.png',
+    TileFlag = '/minesweeper/img/tile/flag.png',
 }
 
 export enum Numbers {
-    NumberZero = '/img/number/zero.png',
-    NumberOne = '/img/number/one.png',
-    NumberTwo = '/img/number/two.png',
-    NumberThree = '/img/number/three.png',
-    NumberFour = '/img/number/four.png',
-    NumberFive = '/img/number/five.png',
-    NumberSix = '/img/number/six.png',
-    NumberSeven = '/img/number/seven.png',
-    NumberEight = '/img/number/eight.png',
-    NumberNine = '/img/number/nine.png'
+    NumberZero = '/minesweeper/img/number/zero.png',
+    NumberOne = '/minesweeper/img/number/one.png',
+    NumberTwo = '/minesweeper/img/number/two.png',
+    NumberThree = '/minesweeper/img/number/three.png',
+    NumberFour = '/minesweeper/img/number/four.png',
+    NumberFive = '/minesweeper/img/number/five.png',
+    NumberSix = '/minesweeper/img/number/six.png',
+    NumberSeven = '/minesweeper/img/number/seven.png',
+    NumberEight = '/minesweeper/img/number/eight.png',
+    NumberNine = '/minesweeper/img/number/nine.png'
 }
 
 export interface ITile {
