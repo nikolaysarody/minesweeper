@@ -71,7 +71,7 @@ const Tile: React.FC<ITileItem> = ({
     const checkTileStatus = () => {
         if (status !== TileStatuses.TileMine && tileStatus) {
             dispatch(updateGameStatus(GameStatuses.Begin));
-            if (renderCount && neighbours) {
+            if (renderCount && neighbours && tileStatus === TileStatuses.TileDefault) {
                 checkNeighbours();
             } else if (tileStatus === TileStatuses.TileDefault) {
                 waveGenerator(tileCoordinates, TileStatuses.TileDefault);
