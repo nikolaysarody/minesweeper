@@ -1,6 +1,6 @@
 ### Игра «Сапёр». Технологический стек: React, TypeScript, redux-toolkit.
 
-Ссылка на опубликованный проект: `https://nikolaysarody.github.io/minesweeper/`
+Ссылка на опубликованный проект: <https://nikolaysarody.github.io/minesweeper/>
 
 Или вы можете запустить его самостоятельно у себя на компьютере:
 1) Если у Вас не установлены Node.js и git, установите их - `https://nodejs.org/en/download/` и `https://git-scm.com/download/`
