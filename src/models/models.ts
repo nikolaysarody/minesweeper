@@ -57,7 +57,7 @@ export interface ITile {
     renderCount?: number,
 }
 
-export interface ITileItem extends ITile  {
+export interface ITileItem extends ITile {
     generator: (agr: number[]) => void,
     waveGenerator: (agr0: number[], agr1: TileStatuses) => void,
 }
