@@ -179,11 +179,15 @@ const Tile: React.FC<ITileItem> = ({
                         || tileStatus === TileStatuses.TileFlag
                         || tileStatus === TileStatuses.TileMine
                     ) {
-                        if (flagCoordinates.includes(tileCoordinates)) {
+                        if (flagCoordinates.find((item) => {
+                            return JSON.stringify(item) === JSON.stringify(tileCoordinates);
+                        })) {
                             dispatch(removeFlagMinesCoordinates(tileCoordinates));
                             dispatch(addQuestionMinesCoordinates(tileCoordinates));
                             setTileStatus(TileStatuses.TileQuestion);
-                        } else if (questionCoordinates.includes(tileCoordinates)) {
+                        } else if (questionCoordinates.find((item) => {
+                            return JSON.stringify(item) === JSON.stringify(tileCoordinates);
+                        })) {
                             dispatch(removeQuestionMinesCoordinates(tileCoordinates));
                             setTileStatus(TileStatuses.TileDefault);
                         } else {
