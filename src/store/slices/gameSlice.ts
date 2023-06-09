@@ -1,5 +1,5 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {GameStatuses, SmileStatuses} from '../../models/models';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { GameStatuses, SmileStatuses } from '../../models/models';
 
 interface GameState {
     timer: number;
@@ -12,8 +12,8 @@ const initialState: GameState = {
     timer: 0,
     gameStatus: GameStatuses.Idle,
     smileStatus: SmileStatuses.Smile,
-    tileCount: 0
-}
+    tileCount: 0,
+};
 
 const gameSlice = createSlice({
     name: 'game',
@@ -28,15 +28,17 @@ const gameSlice = createSlice({
         updateSmileStatus(state, action: PayloadAction<SmileStatuses>) {
             state.smileStatus = action.payload;
         },
-        updateTileCount(state){
-            state.tileCount = state.tileCount + 1;
+        updateTileCount(state) {
+            state.tileCount += 1;
         },
-        deleteTileCount(state){
+        deleteTileCount(state) {
             state.tileCount = 0;
-        }
-    }
+        },
+    },
 });
 
-export const {updateTimer, updateGameStatus, updateSmileStatus, updateTileCount, deleteTileCount} = gameSlice.actions;
+export const {
+    updateTimer, updateGameStatus, updateSmileStatus, updateTileCount, deleteTileCount,
+} = gameSlice.actions;
 
 export default gameSlice.reducer;
