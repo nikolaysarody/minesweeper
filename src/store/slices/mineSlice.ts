@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface MineState {
     count: number;
@@ -12,7 +12,7 @@ const initialState: MineState = {
     explodedMineCoordinates: [],
     flagCoordinates: [],
     questionCoordinates: [],
-}
+};
 
 const mineSlice = createSlice({
     name: 'mine',
@@ -23,15 +23,15 @@ const mineSlice = createSlice({
         },
         addFlagMinesCoordinates(state, action: PayloadAction<number[]>) {
             state.flagCoordinates.push(action.payload);
-            state.count = state.count - 1;
+            state.count -= 1;
         },
         removeFlagMinesCoordinates(state, action: PayloadAction<number[]>) {
             state.flagCoordinates.forEach((item, index) => {
                 if (item.toString() === action.payload.toString()) {
                     state.flagCoordinates.splice(index, 1);
                 }
-            })
-            state.count = state.count + 1;
+            });
+            state.count += 1;
         },
         deleteFlagMinesCoordinates(state) {
             state.flagCoordinates = [];
@@ -45,11 +45,11 @@ const mineSlice = createSlice({
                 if (item.toString() === action.payload.toString()) {
                     state.questionCoordinates.splice(index, 1);
                 }
-            })
+            });
         },
         deleteQuestionMinesCoordinates(state) {
             state.questionCoordinates = [];
-        }
+        },
     },
 });
 
