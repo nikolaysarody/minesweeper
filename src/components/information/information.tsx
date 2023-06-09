@@ -29,8 +29,6 @@ const Information: React.FC = () => {
         }
     }, [gameStatus]);
 
-
-
     useEffect(() => {
         dispatch(updateTimer(displayTimer));
     }, [displayTimer, dispatch]);
