@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hook';
+import { useAppDispatch, useAppSelector } from '../../shared/lib/hooks/hooks';
 import Smile from '../smile/smile';
-import Counter from '../counter/counter';
+import Counter, { CounterSides } from '../../app/entities/counter/ui/counter';
+import { GameStatuses } from '../../shared/ui/Tile/types/types';
+import { gameActions } from '../../store/slices/gameSlice';
 import './information.scss';
-import { GameStatuses } from '../../models/models';
-import { updateTimer } from '../../store/slices/gameSlice';
 
 const Information: React.FC = () => {
     const gameStatus = useAppSelector((state) => state.game.gameStatus);
@@ -51,14 +51,14 @@ const Information: React.FC = () => {
     }, [gameStatus]);
 
     useEffect(() => {
-        dispatch(updateTimer(displayTimer));
+        dispatch(gameActions.updateTimer(displayTimer));
     }, [displayTimer, dispatch]);
 
     return (
         <div className="app__content-top">
-            <Counter count={count} side="left" key="left" />
+            <Counter count={count} side={CounterSides.left} key={CounterSides.left} />
             <Smile />
-            <Counter count={displayTimer} side="right" key="right" />
+            <Counter count={displayTimer} side={CounterSides.right} key={CounterSides.right} />
         </div>
     );
 };

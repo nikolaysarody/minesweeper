@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GameStatuses, SmileStatuses } from '../../models/models';
+import { GameStatuses, SmileStatuses } from '../../shared/ui/Tile/types/types';
 
 interface GameState {
     timer: number;
@@ -37,8 +37,6 @@ const gameSlice = createSlice({
     },
 });
 
-export const {
-    updateTimer, updateGameStatus, updateSmileStatus, updateTileCount, deleteTileCount,
-} = gameSlice.actions;
+export const { actions: gameActions } = gameSlice;
 
 export default gameSlice.reducer;

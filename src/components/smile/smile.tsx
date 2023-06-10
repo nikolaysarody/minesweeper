@@ -1,12 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hook';
-import { GameStatuses, SmileStatuses } from '../../models/models';
+import { useAppDispatch, useAppSelector } from '../../shared/lib/hooks/hooks';
+import { GameStatuses, SmileStatuses } from '../../shared/ui/Tile/types/types';
 import './smile.scss';
-import {
-    deleteFlagMinesCoordinates,
-    deleteQuestionMinesCoordinates,
-} from '../../store/slices/mineSlice';
-import { deleteTileCount, updateGameStatus } from '../../store/slices/gameSlice';
+import { mineActions } from '../../store/slices/mineSlice';
+import { gameActions } from '../../store/slices/gameSlice';
 
 const Smile: React.FC = () => {
     const smileStatus = useAppSelector((state) => state.game.smileStatus);
@@ -29,10 +26,10 @@ const Smile: React.FC = () => {
         <div
             className="app__content-top-smile"
             onClick={() => {
-                dispatch(updateGameStatus(GameStatuses.Restart));
-                dispatch(deleteFlagMinesCoordinates());
-                dispatch(deleteQuestionMinesCoordinates());
-                dispatch(deleteTileCount());
+                dispatch(gameActions.updateGameStatus(GameStatuses.Restart));
+                dispatch(mineActions.deleteFlagCoordinates());
+                dispatch(mineActions.deleteQuestionCoordinates());
+                dispatch(gameActions.deleteTileCount());
             }}
             onMouseDown={() => (
                 smileStatus === SmileStatuses.Smile && setDisplay(SmileStatuses.PressedSmile)
