@@ -1,7 +1,7 @@
 import React from 'react';
-import './App.scss';
-import Information from './components/information/information';
-import GameField from './components/gameField/gameField';
+import Information from '../components/information/information';
+import GameField from '../components/gameField/gameField';
+import './styles/index.scss';
 
 function App() {
     return (

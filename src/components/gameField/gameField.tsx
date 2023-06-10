@@ -1,13 +1,15 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+    useCallback, useEffect, useMemo, useState,
+} from 'react';
 import { v4 } from 'uuid';
 import './gameField.scss';
-import Tile from './tile/tile';
+import Tile from '../../shared/ui/Tile/ui/Tile';
 import {
     GameStatuses, ITile, SmileStatuses, TileStatuses,
-} from '../../models/models';
-import { useAppDispatch, useAppSelector } from '../../hook';
-import { removeFlagMinesCoordinates } from '../../store/slices/mineSlice';
-import { updateGameStatus, updateSmileStatus } from '../../store/slices/gameSlice';
+} from '../../shared/ui/Tile/types/types';
+import { useAppDispatch, useAppSelector } from '../../shared/lib/hooks/hooks';
+import { mineActions } from '../../store/slices/mineSlice';
+import { gameActions } from '../../store/slices/gameSlice';
 
 const GameField: React.FC = () => {
     const tileCount = useAppSelector((state) => state.game.tileCount);
@@ -15,7 +17,6 @@ const GameField: React.FC = () => {
     const questionCoordinates = useAppSelector((state) => state.mine.questionCoordinates);
     const gameStatus = useAppSelector((state) => state.game.gameStatus);
     const [tileArr, setTileArr] = useState<ITile[][]>([]);
-    const [newRender, setNewRender] = useState<boolean>(false);
     const [ignoreCoordinates, setIgnoreCoordinates] = useState<number[]>([]);
     const dispatch = useAppDispatch();
 
@@ -28,9 +29,9 @@ const GameField: React.FC = () => {
         });
     };
 
-    const checkNeighbours = (neighbours: number, coordinates?: number[]): TileStatuses => {
+    const checkNeighbours = useCallback((neighbours: number, coordinates?: number[]): TileStatuses => {
         if (coordinates && compareMatrixArray(coordinates, flagCoordinates)) {
-            dispatch(removeFlagMinesCoordinates(coordinates));
+            dispatch(mineActions.removeFlagCoordinates(coordinates));
         }
         switch (neighbours) {
         case 1:
@@ -52,9 +53,9 @@ const GameField: React.FC = () => {
         default:
             return TileStatuses.TileVoid;
         }
-    };
+    }, [dispatch, flagCoordinates]);
 
-    const waveGenerator = (coordinates: number[]) => {
+    const waveGenerator = useCallback((coordinates: number[]) => {
         const newArr = tileArr.slice();
         const i = coordinates[0];
         const j = coordinates[1];
@@ -101,9 +102,10 @@ const GameField: React.FC = () => {
             }
         }
         setTileArr(newArr);
-    };
+    }, [checkNeighbours, tileArr]);
 
-    const generateMineField = useMemo((ignore?: number[]) => {
+    const generateMineField = useMemo(() => {
+        const ignore = ignoreCoordinates;
         let count = 0;
         const arrColumns: ITile[][] = [];
         while (count < 40) {
@@ -202,23 +204,22 @@ const GameField: React.FC = () => {
             });
         });
         return arrColumns;
-    }, [flagCoordinates, questionCoordinates]);
+    }, [flagCoordinates, questionCoordinates, ignoreCoordinates]);
 
     useEffect(() => {
         if (gameStatus === GameStatuses.Restart) {
-            dispatch(updateGameStatus(GameStatuses.Idle));
-            dispatch(updateSmileStatus(SmileStatuses.Smile));
+            dispatch(gameActions.updateGameStatus(GameStatuses.Idle));
+            dispatch(gameActions.updateSmileStatus(SmileStatuses.Smile));
             setIgnoreCoordinates([]);
-            setNewRender((prevState) => !prevState);
         }
         if (gameStatus === GameStatuses.Win) {
-            dispatch(updateSmileStatus(SmileStatuses.Cool));
+            dispatch(gameActions.updateSmileStatus(SmileStatuses.Cool));
         }
     }, [dispatch, gameStatus]);
 
     useEffect(() => {
         if (tileCount === 216) {
-            dispatch(updateGameStatus(GameStatuses.Win));
+            dispatch(gameActions.updateGameStatus(GameStatuses.Win));
         }
     }, [dispatch, tileCount]);
 
@@ -235,10 +236,7 @@ const GameField: React.FC = () => {
                             status={item.status}
                             neighbours={item.neighbours}
                             key={v4()}
-                            generator={(coordinates) => {
-                                setIgnoreCoordinates(coordinates);
-                                setNewRender((prevState) => !prevState);
-                            }}
+                            generator={setIgnoreCoordinates}
                             tileCoordinates={item.tileCoordinates}
                             pressedTile={item.pressedTile}
                             borderTile={item.borderTile}

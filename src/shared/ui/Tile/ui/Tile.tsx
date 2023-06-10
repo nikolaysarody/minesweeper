@@ -1,41 +1,30 @@
-import React, {
-    useCallback, useEffect, useRef, useState,
-} from 'react';
+import React from 'react';
 import {
     GameStatuses, ITileItem, SmileStatuses, TileStatuses,
-} from '../../../models/models';
-import './tile.scss';
-import { useAppDispatch, useAppSelector } from '../../../hook';
-import {
-    addFlagMinesCoordinates,
-    addQuestionMinesCoordinates,
-    removeFlagMinesCoordinates,
-    removeQuestionMinesCoordinates,
-    updateExplodedMineCoordinates,
-} from '../../../store/slices/mineSlice';
-import {
-    updateGameStatus,
-    updateSmileStatus,
-    updateTileCount,
-} from '../../../store/slices/gameSlice';
+} from '../types/types';
+import { useAppDispatch, useAppSelector } from '../../../lib/hooks/hooks';
+import { gameActions } from '../../../../store/slices/gameSlice';
+import { mineActions } from '../../../../store/slices/mineSlice';
+import styles from './Tile.module.scss';
 
-const Tile: React.FC<ITileItem> = ({
-    status,
-    neighbours,
-    generator,
-    tileCoordinates,
-    pressedTile,
-    borderTile,
-    waveGenerator,
-    renderCount = 0,
-    flag,
-    question,
-}) => {
+const Tile: React.FC<ITileItem> = (props) => {
+    const {
+        status,
+        neighbours,
+        generator,
+        tileCoordinates,
+        pressedTile,
+        borderTile,
+        waveGenerator,
+        renderCount = 0,
+        flag,
+        question,
+    } = props;
     const gameStatus = useAppSelector((state) => state.game.gameStatus);
     const explodedTile = useAppSelector((state) => state.mine.explodedMineCoordinates);
     const flagCoordinates = useAppSelector((state) => state.mine.flagCoordinates);
     const questionCoordinates = useAppSelector((state) => state.mine.questionCoordinates);
-    const [tileStatus, setTileStatus] = useState<TileStatuses>(() => {
+    const [tileStatus, setTileStatus] = React.useState<TileStatuses>(() => {
         if (borderTile) {
             return status;
         } if (flagCoordinates.includes(tileCoordinates) || flag) {
@@ -45,12 +34,12 @@ const Tile: React.FC<ITileItem> = ({
         }
         return TileStatuses.TileDefault;
     });
-    const tileContainer = useRef<HTMLDivElement>(null);
+    const tileContainer = React.useRef<HTMLDivElement>(null);
 
     const dispatch = useAppDispatch();
 
-    const checkNeighbours = useCallback(() => {
-        dispatch(updateTileCount());
+    const checkNeighbours = React.useCallback(() => {
+        dispatch(gameActions.updateTileCount());
         setTileStatus(() => {
             switch (neighbours) {
             case 1:
@@ -77,7 +66,7 @@ const Tile: React.FC<ITileItem> = ({
 
     const checkTileStatus = () => {
         if (status !== TileStatuses.TileMine && tileStatus) {
-            dispatch(updateGameStatus(GameStatuses.Begin));
+            dispatch(gameActions.updateGameStatus(GameStatuses.Begin));
             if (renderCount && neighbours && tileStatus === TileStatuses.TileDefault) {
                 checkNeighbours();
             } else if (tileStatus === TileStatuses.TileDefault) {
@@ -85,15 +74,16 @@ const Tile: React.FC<ITileItem> = ({
                 checkNeighbours();
             }
         } else if (gameStatus !== GameStatuses.Begin) {
+            console.log('МИНА!!!!!');
             generator(tileCoordinates);
         } else {
-            dispatch(updateGameStatus(GameStatuses.End));
-            dispatch(updateExplodedMineCoordinates(tileCoordinates));
-            dispatch(updateSmileStatus(SmileStatuses.Dead));
+            dispatch(gameActions.updateGameStatus(GameStatuses.End));
+            dispatch(mineActions.updateExplodedCoordinates(tileCoordinates));
+            dispatch(gameActions.updateSmileStatus(SmileStatuses.Dead));
         }
     };
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (flagCoordinates.includes(tileCoordinates)) {
             setTileStatus(TileStatuses.TileFlag);
         }
@@ -103,7 +93,7 @@ const Tile: React.FC<ITileItem> = ({
         }
     }, [flagCoordinates, tileContainer, tileCoordinates]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (gameStatus === GameStatuses.End) {
             if (status === TileStatuses.TileMine) {
                 if (explodedTile !== tileCoordinates) {
@@ -126,7 +116,7 @@ const Tile: React.FC<ITileItem> = ({
         tileStatus,
     ]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (borderTile) {
             if (renderCount < 1 && !pressedTile) {
                 waveGenerator(tileCoordinates, tileStatus);
@@ -135,7 +125,7 @@ const Tile: React.FC<ITileItem> = ({
         }
         if (pressedTile && gameStatus !== GameStatuses.End && renderCount === 0) {
             if (gameStatus !== GameStatuses.Begin) {
-                dispatch(updateGameStatus(GameStatuses.Begin));
+                dispatch(gameActions.updateGameStatus(GameStatuses.Begin));
             }
             if (status !== TileStatuses.TileMine) {
                 waveGenerator(tileCoordinates, tileStatus);
@@ -157,7 +147,7 @@ const Tile: React.FC<ITileItem> = ({
 
     return (
         <div
-            className="app__content-down-tile"
+            className={styles.tile}
             onClick={() => {
                 if (
                     gameStatus !== GameStatuses.End
@@ -182,16 +172,16 @@ const Tile: React.FC<ITileItem> = ({
                         if (flagCoordinates.find((item) => {
                             return JSON.stringify(item) === JSON.stringify(tileCoordinates);
                         })) {
-                            dispatch(removeFlagMinesCoordinates(tileCoordinates));
-                            dispatch(addQuestionMinesCoordinates(tileCoordinates));
+                            dispatch(mineActions.removeFlagCoordinates(tileCoordinates));
+                            dispatch(mineActions.addQuestionCoordinates(tileCoordinates));
                             setTileStatus(TileStatuses.TileQuestion);
                         } else if (questionCoordinates.find((item) => {
                             return JSON.stringify(item) === JSON.stringify(tileCoordinates);
                         })) {
-                            dispatch(removeQuestionMinesCoordinates(tileCoordinates));
+                            dispatch(mineActions.removeQuestionCoordinates(tileCoordinates));
                             setTileStatus(TileStatuses.TileDefault);
                         } else {
-                            dispatch(addFlagMinesCoordinates(tileCoordinates));
+                            dispatch(mineActions.addFlagCoordinates(tileCoordinates));
                             setTileStatus(TileStatuses.TileFlag);
                         }
                     }
@@ -200,17 +190,21 @@ const Tile: React.FC<ITileItem> = ({
             ref={tileContainer}
             onMouseDown={() => {
                 if (gameStatus !== GameStatuses.End && gameStatus !== GameStatuses.Win) {
-                    dispatch(updateSmileStatus(SmileStatuses.Scary));
+                    dispatch(gameActions.updateSmileStatus(SmileStatuses.Scary));
                 }
-                if (questionCoordinates.includes(tileCoordinates)) {
+                if (questionCoordinates.find((item) => {
+                    return JSON.stringify(item) === JSON.stringify(tileCoordinates);
+                })) {
                     setTileStatus(TileStatuses.TileQuestionPressed);
                 }
             }}
             onMouseUp={() => {
                 if (gameStatus !== GameStatuses.End && gameStatus !== GameStatuses.Win) {
-                    dispatch(updateSmileStatus(SmileStatuses.Smile));
+                    dispatch(gameActions.updateSmileStatus(SmileStatuses.Smile));
                 }
-                if (questionCoordinates.includes(tileCoordinates)) {
+                if (questionCoordinates.find((item) => {
+                    return JSON.stringify(item) === JSON.stringify(tileCoordinates);
+                })) {
                     setTileStatus(TileStatuses.TileDefault);
                 }
             }}

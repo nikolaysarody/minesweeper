@@ -18,14 +18,14 @@ const mineSlice = createSlice({
     name: 'mine',
     initialState,
     reducers: {
-        updateExplodedMineCoordinates(state, action: PayloadAction<number[]>) {
+        updateExplodedCoordinates(state, action: PayloadAction<number[]>) {
             state.explodedMineCoordinates = action.payload;
         },
-        addFlagMinesCoordinates(state, action: PayloadAction<number[]>) {
+        addFlagCoordinates(state, action: PayloadAction<number[]>) {
             state.flagCoordinates.push(action.payload);
             state.count -= 1;
         },
-        removeFlagMinesCoordinates(state, action: PayloadAction<number[]>) {
+        removeFlagCoordinates(state, action: PayloadAction<number[]>) {
             state.flagCoordinates.forEach((item, index) => {
                 if (item.toString() === action.payload.toString()) {
                     state.flagCoordinates.splice(index, 1);
@@ -33,34 +33,26 @@ const mineSlice = createSlice({
             });
             state.count += 1;
         },
-        deleteFlagMinesCoordinates(state) {
+        deleteFlagCoordinates(state) {
             state.flagCoordinates = [];
             state.count = 40;
         },
-        addQuestionMinesCoordinates(state, action: PayloadAction<number[]>) {
+        addQuestionCoordinates(state, action: PayloadAction<number[]>) {
             state.questionCoordinates.push(action.payload);
         },
-        removeQuestionMinesCoordinates(state, action: PayloadAction<number[]>) {
+        removeQuestionCoordinates(state, action: PayloadAction<number[]>) {
             state.questionCoordinates.forEach((item, index) => {
                 if (item.toString() === action.payload.toString()) {
                     state.questionCoordinates.splice(index, 1);
                 }
             });
         },
-        deleteQuestionMinesCoordinates(state) {
+        deleteQuestionCoordinates(state) {
             state.questionCoordinates = [];
         },
     },
 });
 
-export const {
-    updateExplodedMineCoordinates,
-    addFlagMinesCoordinates,
-    removeFlagMinesCoordinates,
-    deleteFlagMinesCoordinates,
-    addQuestionMinesCoordinates,
-    removeQuestionMinesCoordinates,
-    deleteQuestionMinesCoordinates,
-} = mineSlice.actions;
+export const { actions: mineActions } = mineSlice;
 
 export default mineSlice.reducer;
