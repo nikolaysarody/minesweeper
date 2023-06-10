@@ -17,7 +17,6 @@ const GameField: React.FC = () => {
     const questionCoordinates = useAppSelector((state) => state.mine.questionCoordinates);
     const gameStatus = useAppSelector((state) => state.game.gameStatus);
     const [tileArr, setTileArr] = useState<ITile[][]>([]);
-    const [newRender, setNewRender] = useState<boolean>(false);
     const [ignoreCoordinates, setIgnoreCoordinates] = useState<number[]>([]);
     const dispatch = useAppDispatch();
 
@@ -105,7 +104,8 @@ const GameField: React.FC = () => {
         setTileArr(newArr);
     }, [checkNeighbours, tileArr]);
 
-    const generateMineField = useMemo((ignore?: number[]) => {
+    const generateMineField = useMemo(() => {
+        const ignore = ignoreCoordinates;
         let count = 0;
         const arrColumns: ITile[][] = [];
         while (count < 40) {
@@ -204,19 +204,13 @@ const GameField: React.FC = () => {
             });
         });
         return arrColumns;
-    }, [flagCoordinates, questionCoordinates]);
-
-    const generator = useCallback((coordinates: number[]) => {
-        setIgnoreCoordinates(coordinates);
-        setNewRender((prevState) => !prevState);
-    }, []);
+    }, [flagCoordinates, questionCoordinates, ignoreCoordinates]);
 
     useEffect(() => {
         if (gameStatus === GameStatuses.Restart) {
             dispatch(gameActions.updateGameStatus(GameStatuses.Idle));
             dispatch(gameActions.updateSmileStatus(SmileStatuses.Smile));
             setIgnoreCoordinates([]);
-            setNewRender((prevState) => !prevState);
         }
         if (gameStatus === GameStatuses.Win) {
             dispatch(gameActions.updateSmileStatus(SmileStatuses.Cool));
@@ -242,7 +236,7 @@ const GameField: React.FC = () => {
                             status={item.status}
                             neighbours={item.neighbours}
                             key={v4()}
-                            generator={generator}
+                            generator={setIgnoreCoordinates}
                             tileCoordinates={item.tileCoordinates}
                             pressedTile={item.pressedTile}
                             borderTile={item.borderTile}

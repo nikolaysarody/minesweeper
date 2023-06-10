@@ -74,6 +74,7 @@ const Tile: React.FC<ITileItem> = (props) => {
                 checkNeighbours();
             }
         } else if (gameStatus !== GameStatuses.Begin) {
+            console.log('МИНА!!!!!');
             generator(tileCoordinates);
         } else {
             dispatch(gameActions.updateGameStatus(GameStatuses.End));
