@@ -13,12 +13,10 @@
 
 ----
 
-## Стек и архитектура проекта
+### Стек и архитектура проекта
 
 Стек: TypeScript, React, redux-toolkit
 
 Проект написан в соответствии с методологией Feature sliced design
 
 Ссылка на документацию - [feature sliced design](https://feature-sliced.design/docs/get-started/tutorial)
-
-----
