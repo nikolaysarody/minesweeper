@@ -1,0 +1,17 @@
+.MainPage {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;max-width: 550px;
+    border: 4px outset white;
+}
+
+.inside {
+    height: 100%;
+    border: 10px solid #cccccc;
+}
+
+.center {
+    margin: 0;
+    border: 5px solid #cccccc;
+}

@@ -1,0 +1,16 @@
+.Smile {
+    display: flex;
+    height: 53px;
+    width: 53px;
+    cursor: pointer;
+
+    @media (max-width: 450px) {
+        height: 35px;
+        width: 35px;
+    }
+
+    @media (max-width: 300px) {
+        height: 26px;
+        width: 26px;
+    }
+}
