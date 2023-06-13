@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GameStatuses, SmileStatuses } from '../../../../entities/Tile/model/types/types';
+import { SmileStatuses } from '../../../../entities/Smile/model/types';
+import { GameStatuses } from '../types';
 
 interface GameState {
     timer: number;

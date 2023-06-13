@@ -1,17 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Numbers } from '../../Tile/model/types/types';
 import styles from './Counter.module.scss';
 import { classNames } from '../../../shared/lib/classNames/classNames';
-
-export enum CounterSides {
-    right = 'right',
-    left = 'left'
-}
-
-interface ICounter {
-    count: number,
-    side: CounterSides
-}
+import { ICounter, Numbers } from '../model/types';
 
 export const Counter: React.FC<ICounter> = ({ count, side }) => {
     const [display, setDisplay] = useState<Numbers[]>([
@@ -90,9 +80,9 @@ export const Counter: React.FC<ICounter> = ({ count, side }) => {
 
     return (
         <div className={classNames(styles.Counter, {}, [styles[side]])} ref={counterContainer}>
-            <img src={display[0]} alt="0" />
-            <img src={display[1]} alt="0" />
-            <img src={display[2]} alt="0" />
+            <img src={display[0] as unknown as string} alt="0" />
+            <img src={display[1] as unknown as string} alt="0" />
+            <img src={display[2] as unknown as string} alt="0" />
         </div>
     );
 };

@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../shared/lib/hooks/hooks';
-import { GameStatuses, SmileStatuses } from '../../Tile/model/types/types';
 import { mineActions } from '../../Tile/model/slice/mineSlice';
 import { gameActions } from '../../../widgets/GameField/model/slice/gameSlice';
+import { getSmileStatus } from '../../../widgets/GameField/model/selectors/getSmileStatus';
+import { GameStatuses } from '../../../widgets/GameField/model/types';
+import { SmileStatuses } from '../model/types';
 import styles from './Smile.module.scss';
 
 export const Smile: React.FC = () => {
-    const smileStatus = useAppSelector((state) => state.game.smileStatus);
+    const smileStatus = useAppSelector(getSmileStatus);
     const [display, setDisplay] = useState<SmileStatuses>(SmileStatuses.Smile);
     const smileContainer = useRef<HTMLDivElement>(null);
-
     const dispatch = useAppDispatch();
 
     useEffect(() => {
@@ -38,7 +39,7 @@ export const Smile: React.FC = () => {
             onMouseOut={() => setDisplay(smileStatus)}
             ref={smileContainer}
         >
-            <img src={display} alt="0" />
+            <img src={display as unknown as string} alt="0" />
         </div>
     );
 };

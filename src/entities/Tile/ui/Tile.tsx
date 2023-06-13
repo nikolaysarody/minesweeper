@@ -1,9 +1,6 @@
 import {
     FC, useCallback, useEffect, useRef, useState,
 } from 'react';
-import {
-    GameStatuses, ITileItem, SmileStatuses, TileStatuses,
-} from '../model/types/types';
 import { useAppDispatch, useAppSelector } from '../../../shared/lib/hooks/hooks';
 import { gameActions } from '../../../widgets/GameField/model/slice/gameSlice';
 import { mineActions } from '../model/slice/mineSlice';
@@ -11,6 +8,9 @@ import { getFlagCoordinates } from '../model/selectors/getFlagCoordinates';
 import { getExplodedMineCoordinates } from '../model/selectors/getExplodedMineCoordinations';
 import { getQuestionCoordinates } from '../model/selectors/getQuestionCoordinates';
 import { getGameStatus } from '../../../widgets/GameField/model/selectors/getGameStatus';
+import { SmileStatuses } from '../../Smile/model/types';
+import { GameStatuses } from '../../../widgets/GameField/model/types';
+import { ITileItem, TileStatuses } from '../model/types';
 import styles from './Tile.module.scss';
 
 export const Tile: FC<ITileItem> = (props) => {
@@ -225,7 +225,7 @@ export const Tile: FC<ITileItem> = (props) => {
                 }
             }}
         >
-            <img src={tileStatus} alt="" />
+            <img src={tileStatus as unknown as string} alt="" />
         </div>
     );
 };

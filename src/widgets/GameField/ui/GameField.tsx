@@ -2,9 +2,6 @@ import React, {
     useCallback, useEffect, useMemo, useState,
 } from 'react';
 import { Tile } from '../../../entities/Tile';
-import {
-    GameStatuses, ITile, SmileStatuses, TileStatuses,
-} from '../../../entities/Tile/model/types/types';
 import { useAppDispatch, useAppSelector } from '../../../shared/lib/hooks/hooks';
 import { mineActions } from '../../../entities/Tile/model/slice/mineSlice';
 import { gameActions } from '../model/slice/gameSlice';
@@ -12,6 +9,9 @@ import { getFlagCoordinates } from '../../../entities/Tile/model/selectors/getFl
 import { getQuestionCoordinates } from '../../../entities/Tile/model/selectors/getQuestionCoordinates';
 import { getTileCount } from '../model/selectors/getTileCount';
 import { getGameStatus } from '../model/selectors/getGameStatus';
+import { SmileStatuses } from '../../../entities/Smile/model/types';
+import { GameStatuses } from '../model/types';
+import { ITile, TileStatuses } from '../../../entities/Tile/model/types';
 import styles from './GameField.module.scss';
 
 export const GameField: React.FC = () => {
