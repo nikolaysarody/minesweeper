@@ -2,8 +2,6 @@
 
 Ссылка на опубликованный проект: <https://nikolaysarody.github.io/minesweeper/>
 
-----
-
 ## Запуск проекта
 
 1) Если у Вас не установлены Node.js и git, установите их - `https://nodejs.org/en/download/` и `https://git-scm.com/download/`
