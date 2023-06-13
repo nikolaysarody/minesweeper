@@ -1,7 +1,7 @@
 import React, {
     useCallback, useEffect, useMemo, useState,
 } from 'react';
-import Tile from '../../../entities/Tile/ui/Tile';
+import { Tile } from '../../../entities/Tile';
 import {
     GameStatuses, ITile, SmileStatuses, TileStatuses,
 } from '../../../entities/Tile/model/types/types';
@@ -207,13 +207,14 @@ export const GameField: React.FC = () => {
         });
         return arrColumns;
         // eslint-disable-next-line
-    }, [ignoreCoordinates, questionCoordinates]);
+    }, [ignoreCoordinates]);
 
     useEffect(() => {
         if (gameStatus === GameStatuses.Restart) {
             dispatch(gameActions.updateGameStatus(GameStatuses.Idle));
             dispatch(gameActions.updateSmileStatus(SmileStatuses.Smile));
             setIgnoreCoordinates([]);
+            setTileArr([]);
         }
         if (gameStatus === GameStatuses.Win) {
             dispatch(gameActions.updateSmileStatus(SmileStatuses.Cool));

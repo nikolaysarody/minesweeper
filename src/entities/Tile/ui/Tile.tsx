@@ -1,9 +1,5 @@
 import {
-    FC,
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
+    FC, useCallback, useEffect, useRef, useState,
 } from 'react';
 import {
     GameStatuses, ITileItem, SmileStatuses, TileStatuses,
@@ -12,14 +8,12 @@ import { useAppDispatch, useAppSelector } from '../../../shared/lib/hooks/hooks'
 import { gameActions } from '../../../widgets/GameField/model/slice/gameSlice';
 import { mineActions } from '../model/slice/mineSlice';
 import { getFlagCoordinates } from '../model/selectors/getFlagCoordinates';
-import {
-    getExplodedMineCoordinates,
-} from '../model/selectors/getExplodedMineCoordinations';
+import { getExplodedMineCoordinates } from '../model/selectors/getExplodedMineCoordinations';
 import { getQuestionCoordinates } from '../model/selectors/getQuestionCoordinates';
 import { getGameStatus } from '../../../widgets/GameField/model/selectors/getGameStatus';
 import styles from './Tile.module.scss';
 
-const Tile: FC<ITileItem> = (props) => {
+export const Tile: FC<ITileItem> = (props) => {
     const {
         status,
         neighbours,
@@ -39,9 +33,13 @@ const Tile: FC<ITileItem> = (props) => {
     const [tileStatus, setTileStatus] = useState<TileStatuses>(() => {
         if (borderTile) {
             return status;
-        } if (flagCoordinates.includes(tileCoordinates) || flag) {
+        } if (flagCoordinates.find((item) => {
+            return JSON.stringify(item) === JSON.stringify(tileCoordinates);
+        }) || flag) {
             return TileStatuses.TileFlag;
-        } if (questionCoordinates.includes(tileCoordinates) || question) {
+        } if (questionCoordinates.find((item) => {
+            return JSON.stringify(item) === JSON.stringify(tileCoordinates);
+        }) || question) {
             return TileStatuses.TileQuestion;
         }
         return TileStatuses.TileDefault;
@@ -95,20 +93,27 @@ const Tile: FC<ITileItem> = (props) => {
     };
 
     useEffect(() => {
-        if (flagCoordinates.includes(tileCoordinates)) {
-            setTileStatus(TileStatuses.TileFlag);
-        }
         if (tileContainer.current) {
             tileContainer.current.ondragstart = () => false;
             tileContainer.current.oncontextmenu = () => false;
         }
-    }, [flagCoordinates, tileContainer, tileCoordinates]);
+    }, [tileContainer]);
+
+    useEffect(() => {
+        if (flagCoordinates.find((item) => {
+            return JSON.stringify(item) === JSON.stringify(tileCoordinates);
+        })) {
+            setTileStatus(TileStatuses.TileFlag);
+        }
+    }, [flagCoordinates, tileCoordinates]);
 
     useEffect(() => {
         if (gameStatus === GameStatuses.End) {
             if (status === TileStatuses.TileMine) {
                 if (explodedTile !== tileCoordinates) {
-                    if (!flagCoordinates.includes(tileCoordinates)) {
+                    if (!flagCoordinates.find((item) => {
+                        return JSON.stringify(item) === JSON.stringify(tileCoordinates);
+                    })) {
                         setTileStatus(TileStatuses.TileMine);
                     }
                 } else {
@@ -224,5 +229,3 @@ const Tile: FC<ITileItem> = (props) => {
         </div>
     );
 };
-
-export default Tile;
