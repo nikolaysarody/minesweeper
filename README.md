@@ -1,4 +1,4 @@
-### Игра «Сапёр». Технологический стек: React, TypeScript, redux-toolkit.
+### Игра «Сапёр».
 
 Ссылка на опубликованный проект: <https://nikolaysarody.github.io/minesweeper/>
 
@@ -10,3 +10,15 @@
 5) Выполните команду `npm i`
 6) Выполните команду `npm start`
 7) В браузере откроется окно с проектом, либо перейдите по ссылке `http://localhost:3000/minesweeper`
+
+----
+
+## Стек и архитектура проекта
+
+Стек: TypeScript, React, redux-toolkit
+
+Проект написан в соответствии с методологией Feature sliced design
+
+Ссылка на документацию - [feature sliced design](https://feature-sliced.design/docs/get-started/tutorial)
+
+----
