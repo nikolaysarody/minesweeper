@@ -1,9 +1,13 @@
+:root {
+    --tile-size: 33px;
+}
+
 .tile {
     cursor: pointer;
     display: flex;
-    width: 6.25%;
+    width: var(--tile-size);
 
     img {
-        width: 100%;
+        width: var(--tile-size);
     }
 }

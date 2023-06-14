@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+    useEffect, useRef, useState,
+} from 'react';
 import { useAppDispatch, useAppSelector } from '../../../shared/lib/hooks/hooks';
 import { Counter } from '../../../entities/Counter';
 import { gameActions } from '../../GameField/model/slice/gameSlice';
@@ -10,7 +12,7 @@ import { getMineCount } from '../../../entities/Tile/model/selectors/getMineCoun
 import { CounterSides } from '../../../entities/Counter/model/types';
 import styles from './Information.module.scss';
 
-export const Information: React.FC = () => {
+export const Information = () => {
     const gameStatus = useAppSelector(getGameStatus);
     const timer = useAppSelector(getGameTimer);
     const count = useAppSelector(getMineCount);

@@ -1,9 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+    memo, useEffect, useRef, useState,
+} from 'react';
 import styles from './Counter.module.scss';
 import { classNames } from '../../../shared/lib/classNames/classNames';
 import { ICounter, Numbers } from '../model/types';
 
-export const Counter: React.FC<ICounter> = ({ count, side }) => {
+export const Counter = memo(({ count, side }: ICounter) => {
     const [display, setDisplay] = useState<Numbers[]>([
         Numbers.NumberZero,
         Numbers.NumberZero,
@@ -85,4 +87,4 @@ export const Counter: React.FC<ICounter> = ({ count, side }) => {
             <img src={display[2] as unknown as string} alt="0" />
         </div>
     );
-};
+});

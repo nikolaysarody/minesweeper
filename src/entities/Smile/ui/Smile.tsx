@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import {
+    memo, useEffect, useRef, useState,
+} from 'react';
 import { useAppDispatch, useAppSelector } from '../../../shared/lib/hooks/hooks';
 import { mineActions } from '../../Tile/model/slice/mineSlice';
 import { gameActions } from '../../../widgets/GameField/model/slice/gameSlice';
@@ -7,7 +9,7 @@ import { GameStatuses } from '../../../widgets/GameField/model/types';
 import { SmileStatuses } from '../model/types';
 import styles from './Smile.module.scss';
 
-export const Smile: React.FC = () => {
+export const Smile = memo(() => {
     const smileStatus = useAppSelector(getSmileStatus);
     const [display, setDisplay] = useState<SmileStatuses>(SmileStatuses.Smile);
     const smileContainer = useRef<HTMLDivElement>(null);
@@ -42,4 +44,4 @@ export const Smile: React.FC = () => {
             <img src={display as unknown as string} alt="0" />
         </div>
     );
-};
+});

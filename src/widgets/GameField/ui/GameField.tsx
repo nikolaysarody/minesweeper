@@ -14,7 +14,7 @@ import { GameStatuses } from '../model/types';
 import { ITile, TileStatuses } from '../../../entities/Tile/model/types';
 import styles from './GameField.module.scss';
 
-export const GameField: React.FC = () => {
+export const GameField = () => {
     const tileCount = useAppSelector(getTileCount);
     const flagCoordinates = useAppSelector(getFlagCoordinates);
     const questionCoordinates = useAppSelector(getQuestionCoordinates);

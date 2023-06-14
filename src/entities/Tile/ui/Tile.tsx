@@ -1,5 +1,5 @@
 import {
-    FC, useCallback, useEffect, useRef, useState,
+    memo, useCallback, useEffect, useRef, useState,
 } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../shared/lib/hooks/hooks';
 import { gameActions } from '../../../widgets/GameField/model/slice/gameSlice';
@@ -13,7 +13,7 @@ import { GameStatuses } from '../../../widgets/GameField/model/types';
 import { ITileItem, TileStatuses } from '../model/types';
 import styles from './Tile.module.scss';
 
-export const Tile: FC<ITileItem> = (props) => {
+export const Tile = memo((props: ITileItem) => {
     const {
         status,
         neighbours,
@@ -228,4 +228,4 @@ export const Tile: FC<ITileItem> = (props) => {
             <img src={tileStatus as unknown as string} alt="" />
         </div>
     );
-};
+});

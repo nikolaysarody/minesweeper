@@ -3,4 +3,6 @@
     flex-wrap: wrap;
     border: 4px inset white;
     background-color: #cccccc;
+    width: calc(var(--tile-size) * 16);
+    height: calc(var(--tile-size) * 16);
 }
